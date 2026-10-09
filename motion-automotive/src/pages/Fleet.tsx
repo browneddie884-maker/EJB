@@ -8,7 +8,7 @@ import { categories } from '@/data/types'
 import { useStore } from '@/store/store'
 import { addDays, cn, isoDate, money, prettyDate } from '@/lib/utils'
 
-const typeLabel: Record<string, string> = { Sedan: 'Sedans', SUV: 'SUVs', Electric: 'Electric cars', Sports: 'Sports cars', Luxury: 'Luxury cars' }
+const typeLabel: Record<string, string> = { Sedan: 'Sedans', SUV: 'SUVs', Truck: 'Trucks', Electric: 'Electric cars', Sports: 'Sports cars', Luxury: 'Luxury cars' }
 
 /** Turn the wheel (scroll, drag or arrow keys) to bring a car to the front; click it to open. */
 function FleetWheel({ results, label, carry }: { results: { car: Car; available: boolean }[]; label: string; carry: string }) {

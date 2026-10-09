@@ -8,7 +8,7 @@ import { rangesOverlap } from '@/lib/utils'
  * For launch, replace load/save with calls to a real backend (e.g. Supabase or Firebase)
  * so staff and customers share the same data.
  */
-const CARS_KEY = 'motion.cars.v2'
+const CARS_KEY = 'motion.cars.v3'
 const RES_KEY = 'motion.reservations.v1'
 
 function load<T>(key: string, fallback: T): T {

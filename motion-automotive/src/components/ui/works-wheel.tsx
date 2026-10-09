@@ -411,8 +411,9 @@ export function WorksWheel({
       </div>
       <div
         ref={titleRef}
-        className="pointer-events-none absolute top-1/2 left-[8%] -translate-y-1/2 tracking-tight opacity-0"
-        style={{ fontSize: metrics.title }}
+        className="pointer-events-none absolute top-1/2 left-[8%] -translate-y-1/2 leading-tight tracking-tight text-balance opacity-0"
+        // Wrap before the front card's left edge so long names never run over the art.
+        style={{ fontSize: metrics.title, maxWidth: `calc(42% - ${metrics.cardW / 2 + 16}px)` }}
       >
         {items[active]?.title}
       </div>

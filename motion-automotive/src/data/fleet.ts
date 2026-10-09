@@ -30,6 +30,24 @@ export const seedFleet: Car[] = [
     status: 'available', features: ['Third row', '4x4', 'Tow package'],
   },
   {
+    id: 'toyota-tacoma', make: 'Toyota', model: 'Tacoma TRD Off-Road', year: 2023, category: 'Truck',
+    seats: 5, bags: 4, transmission: 'Automatic', fuel: 'Gas', dailyRate: 89,
+    image: photo('toyota-tacoma'), color: 'Quicksand', plate: 'MTN-3452', mileage: 22618,
+    status: 'available', features: ['4x4', 'Crawl control', 'Bed tie-downs'],
+  },
+  {
+    id: 'ford-f150', make: 'Ford', model: 'F-150 XLT', year: 2023, category: 'Truck',
+    seats: 5, bags: 5, transmission: 'Automatic', fuel: 'Gas', dailyRate: 99,
+    image: photo('ford-f150'), color: 'Velocity Blue', plate: 'MTN-3518', mileage: 19734,
+    status: 'available', features: ['SuperCrew cab', 'Tow package', 'Pro Power Onboard'],
+  },
+  {
+    id: 'ford-f150-raptor', make: 'Ford', model: 'F-150 Raptor', year: 2022, category: 'Truck',
+    seats: 5, bags: 4, transmission: 'Automatic', fuel: 'Gas', dailyRate: 179,
+    image: photo('ford-f150-raptor'), color: 'Carbonized Gray', plate: 'MTN-3605', mileage: 27140,
+    status: 'available', features: ['Fox Live Valve shocks', '4x4', 'Terrain management'],
+  },
+  {
     id: 'tesla-model-3', make: 'Tesla', model: 'Model 3 Long Range', year: 2024, category: 'Electric',
     seats: 5, bags: 3, transmission: 'Automatic', fuel: 'Electric', dailyRate: 82,
     image: photo('tesla-model-3'), color: 'Pearl White', plate: 'MTN-4471', mileage: 9876,

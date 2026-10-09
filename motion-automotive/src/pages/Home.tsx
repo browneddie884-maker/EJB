@@ -15,6 +15,7 @@ import { cn, money } from '@/lib/utils'
 const categoryCopy: Record<Category, string> = {
   Sedan: 'Easy on fuel, easy to park.',
   SUV: 'Room for the family and the luggage.',
+  Truck: 'Haul it, tow it, take it off road.',
   Electric: 'Charged and ready at pickup.',
   Sports: 'For the weekend you have been planning.',
   Luxury: 'Arrive like it matters.',
@@ -47,6 +48,7 @@ function CategoryBento({ cars }: { cars: Car[] }) {
 
   // Desktop 3-column bento, shaped to however many categories are in stock so no cell is left empty.
   const spans: Record<number, string[]> = {
+    6: ['md:row-span-2', '', '', '', '', 'md:col-span-3'],
     5: ['md:row-span-2', '', '', '', ''],
     4: ['md:row-span-2', '', '', 'md:col-span-2'],
     3: ['md:col-span-2', '', 'md:col-span-3'],
@@ -63,7 +65,7 @@ function CategoryBento({ cars }: { cars: Car[] }) {
             <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-4 p-5 text-white">
               <div>
                 <h3 className="text-2xl font-semibold tracking-tight">{t.cat}</h3>
-                {(i === 0 || tiles.length < 5) && <p className="mt-1 max-w-[30ch] text-sm text-white/80">{categoryCopy[t.cat]}</p>}
+                {(i === 0 || tiles.length < 5 || spans[tiles.length]?.[i]?.includes('col-span')) && <p className="mt-1 max-w-[30ch] text-sm text-white/80">{categoryCopy[t.cat]}</p>}
               </div>
               <p className="shrink-0 text-right text-sm">
                 <span className="block text-white/70">{t.count} {t.count === 1 ? 'car' : 'cars'}, from</span>

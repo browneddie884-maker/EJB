@@ -1,6 +1,6 @@
 import type { CoveragePlanId } from '@/config/business'
 
-export const categories = ['Sedan', 'SUV', 'Electric', 'Sports', 'Luxury'] as const
+export const categories = ['Sedan', 'SUV', 'Truck', 'Electric', 'Sports', 'Luxury'] as const
 export type Category = (typeof categories)[number]
 
 export type CarStatus = 'available' | 'maintenance' | 'retired'
