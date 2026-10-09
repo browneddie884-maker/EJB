@@ -161,7 +161,7 @@ export default function Home() {
         </div>
         <DigitalSerenity
           topLine={business.name}
-          headline="Let us put you in motion."
+          headline="Let us put you in Motion."
           subline="Sedans to sports cars, booked in minutes. Bring your own insurance or use ours."
           bottomLine="Choose. Cover. Drive."
         >
