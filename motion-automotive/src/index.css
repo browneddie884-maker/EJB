@@ -21,6 +21,18 @@
   --on-signal: #111316;
   --ok: #157a3c;
   --danger: #b4231a;
+  /* shadcn/ui token names, mapped onto the palette above */
+  --primary: var(--signal);
+  --primary-foreground: var(--on-signal);
+  --secondary: var(--muted);
+  --secondary-foreground: var(--foreground);
+  --accent: var(--muted);
+  --accent-foreground: var(--foreground);
+  --popover: var(--card);
+  --popover-foreground: var(--foreground);
+  --card-foreground: var(--foreground);
+  --input: var(--border);
+  --destructive: var(--danger);
 }
 .dark {
   --background: #0d0e10;
@@ -50,6 +62,17 @@
   --color-on-signal: var(--on-signal);
   --color-ok: var(--ok);
   --color-danger: var(--danger);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-card-foreground: var(--card-foreground);
+  --color-input: var(--input);
+  --color-destructive: var(--destructive);
   --font-sans: "Geist Variable", ui-sans-serif, system-ui, sans-serif;
 }
 

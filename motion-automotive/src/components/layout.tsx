@@ -18,7 +18,7 @@ function ScrollManager() {
   return null
 }
 
-/** The home page renders its own nav inside the video hero. */
+/** The home page renders its own nav over the landing and its own cinematic footer. */
 export function Layout() {
   const { pathname } = useLocation()
   return (
@@ -28,7 +28,7 @@ export function Layout() {
       <main className="flex-1">
         <Outlet />
       </main>
-      <Footer />
+      {pathname !== '/' && <Footer />}
     </div>
   )
 }

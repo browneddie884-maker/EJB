@@ -2,6 +2,7 @@ import { useMemo, useState, type FormEvent, type ReactNode } from 'react'
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { ArrowLeft, Check, FileText, ShieldCheck } from 'lucide-react'
 import { CarImage } from '@/components/car-image'
+import { DateRangeCalendar } from '@/components/date-range-calendar'
 import { PriceSummary } from '@/components/price-summary'
 import { business, coveragePlans, extras, type CoveragePlanId } from '@/config/business'
 import type { Driver, Insurance } from '@/data/types'
@@ -39,7 +40,7 @@ export default function Book() {
   const { id = '' } = useParams()
   const [params] = useSearchParams()
   const navigate = useNavigate()
-  const { getCar, isAvailable, createReservation } = useStore()
+  const { getCar, isAvailable, bookedRanges, createReservation } = useStore()
   const car = getCar(id)
   const today = isoDate(new Date())
 
@@ -122,21 +123,16 @@ export default function Book() {
       <form onSubmit={submit} noValidate className="mt-10 grid gap-12 lg:grid-cols-[1fr_380px]">
         <div className="space-y-12">
           <Step n={1} title="Trip">
-            <div className="grid gap-4 sm:grid-cols-3">
-              <Field label="Pickup date" error={errors.from}>
-                <input type="date" className="field" min={today} value={from} aria-invalid={!!errors.from} onChange={(e) => {
-                  setFrom(e.target.value)
-                  if (to <= e.target.value) setTo(addDays(e.target.value, 1))
-                }} />
-              </Field>
-              <Field label="Return date" error={errors.to ?? (!free ? 'This car is booked for part of those dates.' : undefined)}>
-                <input type="date" className="field" min={addDays(from, 1)} value={to} aria-invalid={!!errors.to || !free} onChange={(e) => setTo(e.target.value)} />
-              </Field>
-              <Field label="Pickup option">
+            <div className="grid gap-6">
+              <DateRangeCalendar from={from} to={to} months={2} booked={bookedRanges(car.id)} onChange={(f, t) => { setFrom(f); setTo(t) }} />
+              {(errors.from || errors.to || !free) && <p className="field-error">{errors.from ?? errors.to ?? 'This car is booked for part of those dates.'}</p>}
+              <div className="sm:max-w-sm">
+                <Field label="Pickup option">
                 <select className="field" value={locationId} onChange={(e) => setLocationId(e.target.value)}>
                   {business.locations.map((l) => <option key={l.id} value={l.id}>{l.name}</option>)}
-                </select>
+                  </select>
               </Field>
+              </div>
             </div>
           </Step>
 

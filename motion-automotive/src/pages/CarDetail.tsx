@@ -2,6 +2,7 @@ import { Link, useParams, useSearchParams } from 'react-router-dom'
 import { ArrowLeft, Check, Wrench } from 'lucide-react'
 import { CarImage } from '@/components/car-image'
 import { CarSpecs } from '@/components/car-card'
+import { DateRangeCalendar } from '@/components/date-range-calendar'
 import { useStore } from '@/store/store'
 import { addDays, isoDate, money, prettyDate } from '@/lib/utils'
 import NotFound from './NotFound'
@@ -9,7 +10,7 @@ import NotFound from './NotFound'
 export default function CarDetail() {
   const { id = '' } = useParams()
   const [params, setParams] = useSearchParams()
-  const { getCar, isAvailable, reservations } = useStore()
+  const { getCar, isAvailable, reservations, bookedRanges } = useStore()
   const car = getCar(id)
   if (!car || car.status === 'retired') return <NotFound />
 
@@ -22,12 +23,10 @@ export default function CarDetail() {
     .filter((r) => r.carId === car.id && (r.status === 'confirmed' || r.status === 'picked-up') && r.dropoff >= today)
     .sort((a, b) => a.pickup.localeCompare(b.pickup))
 
-  const setDate = (key: 'from' | 'to', v: string) => {
+  const setDates = (f: string, t: string) => {
     const next = new URLSearchParams(params)
-    next.set('from', from)
-    next.set('to', to)
-    next.set(key, v)
-    if (key === 'from' && to <= v) next.set('to', addDays(v, 1))
+    next.set('from', f)
+    next.set('to', t)
     setParams(next, { replace: true })
   }
 
@@ -60,16 +59,7 @@ export default function CarDetail() {
               <p className="mt-4 flex items-center gap-2 text-sm text-muted-foreground"><Wrench className="h-4 w-4" /> In service right now. Check back soon.</p>
             ) : (
               <>
-                <div className="mt-4 grid grid-cols-2 gap-3">
-                  <label className="grid gap-1.5">
-                    <span className="field-label">From</span>
-                    <input type="date" className="field" min={today} value={from} onChange={(e) => setDate('from', e.target.value)} />
-                  </label>
-                  <label className="grid gap-1.5">
-                    <span className="field-label">Until</span>
-                    <input type="date" className="field" min={addDays(from, 1)} value={to} onChange={(e) => setDate('to', e.target.value)} />
-                  </label>
-                </div>
+                <DateRangeCalendar className="mt-4" from={from} to={to} onChange={setDates} booked={bookedRanges(car.id)} />
                 {free ? (
                   <Link to={`/book/${car.id}?from=${from}&to=${to}${loc ? `&loc=${loc}` : ''}`} className="btn-signal mt-4 w-full py-3">
                     Reserve this car

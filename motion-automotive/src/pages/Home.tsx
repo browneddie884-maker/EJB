@@ -1,9 +1,10 @@
-import { Link } from 'react-router-dom'
+import { Link, useHref, useNavigate } from 'react-router-dom'
 import { motion, useReducedMotion } from 'motion/react'
 import { ArrowUpRight, Check, FileText, ShieldCheck } from 'lucide-react'
-import heroGarage from '@/assets/hero-garage.jpg'
-import { NavbarHero } from '@/components/ui/hero-with-video'
+import DigitalSerenity from '@/components/ui/digital-serenity-animated-landing-page'
+import { CinematicFooter } from '@/components/ui/motion-footer'
 import { QuickSearch } from '@/components/quick-search'
+import { SiteNav } from '@/components/site-nav'
 import { CarImage } from '@/components/car-image'
 import { MakeLogo } from '@/components/make-logo'
 import { business, coveragePlans } from '@/config/business'
@@ -56,7 +57,7 @@ function CategoryBento({ cars }: { cars: Car[] }) {
     <div className="grid auto-rows-[220px] grid-cols-1 gap-4 md:grid-cols-3 md:auto-rows-[240px]">
       {tiles.map((t, i) => (
         <Reveal key={t.cat} delay={i * 0.05} className={spans[tiles.length]?.[i]}>
-          <Link to={`/fleet?type=${t.cat}`} className="group relative block h-full overflow-hidden rounded-3xl">
+          <Link to={`/fleet?type=${t.cat}&view=wheel`} className="group relative block h-full overflow-hidden rounded-3xl">
             <CarImage car={t.cover} className="absolute inset-0 h-full w-full transition-transform duration-700 group-hover:scale-105" />
             <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent" />
             <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-4 p-5 text-white">
@@ -125,21 +126,46 @@ const steps = [
   { verb: 'Drive', text: 'Show your license at pickup, or have the car delivered to your door.' },
 ]
 
+/** Router-aware link props for the footer's plain anchors. */
+function useAppLink() {
+  const navigate = useNavigate()
+  const fleet = useHref('/fleet')
+  const booking = useHref('/reservations')
+  const staff = useHref('/staff')
+  const insurance = useHref('/#protection')
+  const go = (to: string) => (e: React.MouseEvent) => {
+    e.preventDefault()
+    navigate(to)
+  }
+  return {
+    fleet: { href: fleet, onClick: go('/fleet') },
+    booking: { href: booking, onClick: go('/reservations') },
+    staff: { href: staff, onClick: go('/staff') },
+    insurance: { href: insurance, onClick: go('/#protection') },
+  }
+}
+
 export default function Home() {
   const { cars } = useStore()
+  const links = useAppLink()
   const makes = [...new Set(cars.filter((c) => c.status !== 'retired').map((c) => c.make))].sort()
 
   return (
     <>
-      <NavbarHero
-        brandName={business.name}
-        heroTitle="Rent the car the trip deserves."
-        heroDescription="Sedans to sports cars, booked in minutes. Bring your own insurance or use ours."
-        backgroundImage={heroGarage}
-        videoUrl={import.meta.env.VITE_HERO_VIDEO === 'off' ? undefined : 'https://assets.mixkit.co/videos/41576/41576-720.mp4'}
-      >
-        <QuickSearch />
-      </NavbarHero>
+      {/* The landing is always dark, whatever theme the rest of the site is in. */}
+      <div className="dark relative">
+        <div className="absolute inset-x-0 top-0 z-30">
+          <SiteNav />
+        </div>
+        <DigitalSerenity
+          topLine={business.name}
+          headline="Rent the car the trip deserves."
+          subline="Sedans to sports cars, booked in minutes. Bring your own insurance or use ours."
+          bottomLine="Choose. Cover. Drive."
+        >
+          <QuickSearch />
+        </DigitalSerenity>
+      </div>
 
       <section className="container-page pt-20" aria-label="Browse by make">
         <ul className="-mx-4 flex snap-x gap-2 overflow-x-auto px-4 pb-2 [scrollbar-width:none] sm:mx-0 sm:flex-wrap sm:px-0">
@@ -201,6 +227,26 @@ export default function Home() {
           </Reveal>
         </div>
       </section>
+
+      <div className="mt-28">
+        <CinematicFooter
+          giantText="MOTION"
+          heading="Ready to drive?"
+          marquee={['Sedans to sports cars', 'Your insurance or ours', 'Free cancellation up to 48 hours', 'Delivery to your door', 'Clear daily rates']}
+          primaryLinks={[
+            { label: 'Find a car', ...links.fleet },
+            { label: 'My booking', ...links.booking },
+          ]}
+          secondaryLinks={[
+            { label: business.phone, href: `tel:${business.phone.replace(/[^\d+]/g, '')}` },
+            { label: business.email, href: `mailto:${business.email}` },
+            { label: 'Insurance options', ...links.insurance },
+            { label: 'Staff login', ...links.staff },
+          ]}
+          copyright={`© ${new Date().getFullYear()} ${business.name}`}
+          badge={<span className="text-[10px] font-bold tracking-widest text-muted-foreground uppercase md:text-xs">Open {business.hours}</span>}
+        />
+      </div>
     </>
   )
 }

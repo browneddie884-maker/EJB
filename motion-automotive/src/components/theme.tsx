@@ -13,7 +13,8 @@ function initialTheme(): Theme {
   } catch {
     /* ignore */
   }
-  return window.matchMedia?.('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+  // Dark by default: the landing, wheel and footer were chosen as dark designs.
+  return 'dark'
 }
 
 export function ThemeProvider({ children }: { children: ReactNode }) {

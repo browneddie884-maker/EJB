@@ -1,9 +1,61 @@
-import { Link, useSearchParams } from 'react-router-dom'
-import { SlidersHorizontal, X } from 'lucide-react'
-import { CarCard } from '@/components/car-card'
+import { useCallback, useState } from 'react'
+import { Link, useHref, useNavigate, useSearchParams } from 'react-router-dom'
+import { ArrowRight, LayoutGrid, SlidersHorizontal, X } from 'lucide-react'
+import { CarCard, CarSpecs } from '@/components/car-card'
+import { WorksWheel } from '@/components/ui/works-wheel'
+import type { Car } from '@/data/types'
 import { categories } from '@/data/types'
 import { useStore } from '@/store/store'
-import { addDays, cn, isoDate, prettyDate } from '@/lib/utils'
+import { addDays, cn, isoDate, money, prettyDate } from '@/lib/utils'
+
+const typeLabel: Record<string, string> = { Sedan: 'Sedans', SUV: 'SUVs', Electric: 'Electric cars', Sports: 'Sports cars', Luxury: 'Luxury cars' }
+
+/** Turn the wheel (scroll, drag or arrow keys) to bring a car to the front; click it to open. */
+function FleetWheel({ results, label, carry }: { results: { car: Car; available: boolean }[]; label: string; carry: string }) {
+  const navigate = useNavigate()
+  const base = useHref('/fleet')
+  const [active, setActive] = useState(0)
+  const onActiveChange = useCallback((i: number) => setActive(i), [])
+  const current = results[Math.min(active, results.length - 1)]
+
+  return (
+    <div className="mt-6">
+      <div className="overflow-hidden rounded-3xl border border-border">
+        <WorksWheel
+          label={label}
+          action="View car"
+          className="h-[68vh] min-h-[460px] max-h-[760px] bg-card"
+          items={results.map(({ car, available }) => ({
+            title: `${car.make} ${car.model}${available ? '' : car.status === 'maintenance' ? ' (in service)' : ' (booked)'}`,
+            image: car.image,
+            href: `${base}/${car.id}${carry}`,
+          }))}
+          onSelect={(_, i) => navigate(`/fleet/${results[i].car.id}${carry}`)}
+          onActiveChange={onActiveChange}
+        />
+      </div>
+      {current && (
+        <div className="mt-4 flex flex-col gap-4 rounded-3xl border border-border bg-card p-5 sm:flex-row sm:items-center sm:justify-between">
+          <div className="min-w-0">
+            <p className="text-sm text-muted-foreground">{current.car.year} {current.car.make} &middot; {current.car.category}</p>
+            <p className="text-xl font-semibold tracking-tight">{current.car.model}</p>
+            <CarSpecs car={current.car} className="mt-1" />
+          </div>
+          <div className="flex items-center gap-4">
+            <p className="text-right">
+              <span className="text-2xl font-semibold">{money(current.car.dailyRate)}</span>
+              <span className="block text-xs text-muted-foreground">per day</span>
+            </p>
+            <Link to={`/fleet/${current.car.id}${carry}`} className="btn-signal">
+              View car <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
+        </div>
+      )}
+      <p className="mt-3 text-center text-sm text-muted-foreground">Scroll, drag or use the arrow keys to turn the wheel. The list on the right jumps to any car.</p>
+    </div>
+  )
+}
 
 export default function Fleet() {
   const { cars, isAvailable } = useStore()
@@ -13,6 +65,7 @@ export default function Fleet() {
   const fuel = params.get('fuel') ?? ''
   const seats = Number(params.get('seats') ?? 0)
   const sort = params.get('sort') ?? 'price-asc'
+  const view = params.get('view') ?? (window.matchMedia?.('(min-width: 768px)').matches ? 'wheel' : 'grid')
   const from = params.get('from') ?? ''
   const to = params.get('to') ?? ''
   const today = isoDate(new Date())
@@ -115,8 +168,18 @@ export default function Fleet() {
         </label>
       </div>
 
-      <div className="mt-6 flex items-center justify-between text-sm text-muted-foreground">
-        <span>{results.length} {results.length === 1 ? 'car' : 'cars'}</span>
+      <div className="mt-6 flex items-center justify-between gap-4 text-sm text-muted-foreground">
+        <div className="flex items-center gap-4">
+          <span>{results.length} {results.length === 1 ? 'car' : 'cars'}</span>
+          <div className="flex rounded-full border border-border p-0.5" role="group" aria-label="View">
+            {(['wheel', 'grid'] as const).map((v) => (
+              <button key={v} onClick={() => set('view', v)} aria-pressed={view === v} className={cn('flex items-center gap-1.5 rounded-full px-3 py-1 text-sm capitalize transition-colors', view === v ? 'bg-foreground text-background' : 'hover:text-foreground')}>
+                {v === 'grid' && <LayoutGrid className="h-3.5 w-3.5" />}
+                {v}
+              </button>
+            ))}
+          </div>
+        </div>
         {hasFilters ? (
           <button className="flex items-center gap-1 hover:text-foreground" onClick={() => {
             const next = new URLSearchParams()
@@ -129,7 +192,9 @@ export default function Fleet() {
         ) : null}
       </div>
 
-      {results.length ? (
+      {results.length && view === 'wheel' ? (
+        <FleetWheel key={`${type}-${make}-${fuel}-${seats}-${sort}`} results={results} carry={carryParams} label={type ? typeLabel[type] ?? type : make || 'The fleet'} />
+      ) : results.length ? (
         <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
           {results.map(({ car, available }, i) => (
             <CarCard key={car.id} car={car} available={available} search={carryParams} index={i} />

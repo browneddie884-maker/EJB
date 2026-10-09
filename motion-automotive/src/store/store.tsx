@@ -40,6 +40,7 @@ type Store = {
   reservations: Reservation[]
   getCar: (id: string) => Car | undefined
   isAvailable: (carId: string, from?: string, to?: string, ignoreCode?: string) => boolean
+  bookedRanges: (carId: string, ignoreCode?: string) => { pickup: string; dropoff: string }[]
   createReservation: (r: Omit<Reservation, 'code' | 'status' | 'createdAt'>) => Reservation
   updateReservation: (code: string, patch: Partial<Reservation>) => void
   setReservationStatus: (code: string, status: ReservationStatus) => void
@@ -82,6 +83,14 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     [cars, reservations],
   )
 
+  const bookedRanges = useCallback(
+    (carId: string, ignoreCode?: string) =>
+      reservations
+        .filter((r) => r.carId === carId && r.code !== ignoreCode && (r.status === 'confirmed' || r.status === 'picked-up'))
+        .map((r) => ({ pickup: r.pickup, dropoff: r.dropoff })),
+    [reservations],
+  )
+
   const createReservation: Store['createReservation'] = useCallback((r) => {
     const reservation: Reservation = { ...r, code: makeCode(), status: 'confirmed', createdAt: new Date().toISOString() }
     setReservations((prev) => [reservation, ...prev])
@@ -119,8 +128,8 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   }, [])
 
   const value = useMemo(
-    () => ({ cars, reservations, getCar, isAvailable, createReservation, updateReservation, setReservationStatus, findReservation, upsertCar, removeCar, resetDemo }),
-    [cars, reservations, getCar, isAvailable, createReservation, updateReservation, setReservationStatus, findReservation, upsertCar, removeCar, resetDemo],
+    () => ({ cars, reservations, getCar, isAvailable, bookedRanges, createReservation, updateReservation, setReservationStatus, findReservation, upsertCar, removeCar, resetDemo }),
+    [cars, reservations, getCar, isAvailable, bookedRanges, createReservation, updateReservation, setReservationStatus, findReservation, upsertCar, removeCar, resetDemo],
   )
 
   return <StoreContext.Provider value={value}>{children}</StoreContext.Provider>

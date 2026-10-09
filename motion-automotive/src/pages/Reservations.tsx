@@ -2,11 +2,12 @@ import { useState, type FormEvent } from 'react'
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { CalendarCheck, CircleCheck } from 'lucide-react'
 import { CarImage } from '@/components/car-image'
+import { DateRangeCalendar } from '@/components/date-range-calendar'
 import { PriceSummary } from '@/components/price-summary'
 import { business, coveragePlans, extras } from '@/config/business'
 import type { Reservation } from '@/data/types'
 import { quote } from '@/lib/pricing'
-import { addDays, isoDate, money, prettyDate } from '@/lib/utils'
+import { money, prettyDate } from '@/lib/utils'
 import { useStore } from '@/store/store'
 
 export function ReservationLookup() {
@@ -60,7 +61,7 @@ const statusText: Record<Reservation['status'], string> = {
 export function ReservationDetail() {
   const { code = '' } = useParams()
   const [params] = useSearchParams()
-  const { reservations, getCar, isAvailable, updateReservation, setReservationStatus } = useStore()
+  const { reservations, getCar, isAvailable, bookedRanges, updateReservation, setReservationStatus } = useStore()
   const r = reservations.find((x) => x.code === code)
   const [editing, setEditing] = useState(false)
   const [from, setFrom] = useState(r?.pickup ?? '')
@@ -76,7 +77,6 @@ export function ReservationDetail() {
     )
   }
   const car = getCar(r.carId)
-  const today = isoDate(new Date())
   const hoursToPickup = (new Date(r.pickup + 'T09:00:00').getTime() - Date.now()) / 3_600_000
   const freeCancel = hoursToPickup >= business.freeCancellationHours
   const canChange = r.status === 'confirmed'
@@ -139,16 +139,7 @@ export function ReservationDetail() {
             <h2 className="text-lg font-semibold">Manage booking</h2>
             {editing ? (
               <div className="mt-4 space-y-4">
-                <div className="grid grid-cols-2 gap-3">
-                  <label className="grid gap-1.5">
-                    <span className="field-label">Pickup</span>
-                    <input type="date" className="field" min={today} value={from} onChange={(e) => { setFrom(e.target.value); if (to <= e.target.value) setTo(addDays(e.target.value, 1)) }} />
-                  </label>
-                  <label className="grid gap-1.5">
-                    <span className="field-label">Return</span>
-                    <input type="date" className="field" min={addDays(from, 1)} value={to} onChange={(e) => setTo(e.target.value)} />
-                  </label>
-                </div>
+                <DateRangeCalendar from={from} to={to} booked={bookedRanges(r.carId, r.code)} onChange={(f, t) => { setFrom(f); setTo(t) }} />
                 {!newDatesFree && <p className="field-error">The car is booked for part of those dates.</p>}
                 {newQuote && newDatesFree && <PriceSummary q={newQuote} />}
                 <div className="flex gap-2">
