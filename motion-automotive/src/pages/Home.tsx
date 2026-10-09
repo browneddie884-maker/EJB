@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import { motion, useReducedMotion } from 'motion/react'
 import { ArrowUpRight, Check, FileText, ShieldCheck } from 'lucide-react'
+import heroGarage from '@/assets/hero-garage.jpg'
 import { NavbarHero } from '@/components/ui/hero-with-video'
 import { QuickSearch } from '@/components/quick-search'
 import { CarImage } from '@/components/car-image'
@@ -134,8 +135,8 @@ export default function Home() {
         brandName={business.name}
         heroTitle="Rent the car the trip deserves."
         heroDescription="Sedans to sports cars, booked in minutes. Bring your own insurance or use ours."
-        backgroundImage="https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?auto=format&fit=crop&w=2000&q=75"
-        videoUrl="https://assets.mixkit.co/videos/41576/41576-720.mp4"
+        backgroundImage={heroGarage}
+        videoUrl={import.meta.env.VITE_HERO_VIDEO === 'off' ? undefined : 'https://assets.mixkit.co/videos/41576/41576-720.mp4'}
       >
         <QuickSearch />
       </NavbarHero>

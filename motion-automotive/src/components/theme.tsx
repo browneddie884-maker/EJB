@@ -4,6 +4,9 @@ type Theme = 'light' | 'dark'
 const ThemeContext = createContext<{ theme: Theme; setTheme: (t: Theme) => void } | null>(null)
 
 function initialTheme(): Theme {
+  // An embedding host (e.g. the artifact viewer) may set data-theme on <html>.
+  const hostTheme = document.documentElement.dataset.theme
+  if (hostTheme === 'light' || hostTheme === 'dark') return hostTheme
   try {
     const saved = localStorage.getItem('motion.theme')
     if (saved === 'light' || saved === 'dark') return saved

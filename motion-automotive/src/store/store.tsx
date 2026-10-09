@@ -8,7 +8,7 @@ import { rangesOverlap } from '@/lib/utils'
  * For launch, replace load/save with calls to a real backend (e.g. Supabase or Firebase)
  * so staff and customers share the same data.
  */
-const CARS_KEY = 'motion.cars.v1'
+const CARS_KEY = 'motion.cars.v2'
 const RES_KEY = 'motion.reservations.v1'
 
 function load<T>(key: string, fallback: T): T {
@@ -52,10 +52,16 @@ type Store = {
 const StoreContext = createContext<Store | null>(null)
 
 export function StoreProvider({ children }: { children: ReactNode }) {
-  const [cars, setCars] = useState<Car[]>(() => load(CARS_KEY, seedFleet))
+  // Bundled seed photos are not stored (they can be large data URIs); they are restored on load.
+  const [cars, setCars] = useState<Car[]>(() =>
+    load<Car[]>(CARS_KEY, seedFleet).map((c) => (c.image ? c : { ...c, image: seedFleet.find((s) => s.id === c.id)?.image ?? '' })),
+  )
   const [reservations, setReservations] = useState<Reservation[]>(() => load(RES_KEY, []))
 
-  useEffect(() => save(CARS_KEY, cars), [cars])
+  useEffect(
+    () => save(CARS_KEY, cars.map((c) => (c.image === seedFleet.find((s) => s.id === c.id)?.image ? { ...c, image: '' } : c))),
+    [cars],
+  )
   useEffect(() => save(RES_KEY, reservations), [reservations])
 
   const getCar = useCallback((id: string) => cars.find((c) => c.id === id), [cars])

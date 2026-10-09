@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { BrowserRouter, HashRouter, Route, Routes } from 'react-router-dom'
 import { Layout } from '@/components/layout'
 import { ThemeProvider } from '@/components/theme'
 import { StoreProvider } from '@/store/store'
@@ -10,11 +10,14 @@ import NotFound from '@/pages/NotFound'
 import { ReservationDetail, ReservationLookup } from '@/pages/Reservations'
 import Staff from '@/pages/Staff'
 
+// Hash routing for static hosts that cannot rewrite every path to index.html.
+const Router = import.meta.env.VITE_HASH_ROUTER ? HashRouter : BrowserRouter
+
 export default function App() {
   return (
     <ThemeProvider>
       <StoreProvider>
-        <BrowserRouter>
+        <Router>
           <Routes>
             <Route element={<Layout />}>
               <Route index element={<Home />} />
@@ -27,7 +30,7 @@ export default function App() {
               <Route path="*" element={<NotFound />} />
             </Route>
           </Routes>
-        </BrowserRouter>
+        </Router>
       </StoreProvider>
     </ThemeProvider>
   )

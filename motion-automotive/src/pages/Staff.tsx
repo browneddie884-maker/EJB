@@ -102,6 +102,7 @@ function CarForm({ initial, onSave, onCancel }: { initial: Car; onSave: (c: Car)
 function Inventory() {
   const { cars, reservations, upsertCar, removeCar } = useStore()
   const [editing, setEditing] = useState<Car | null>(null)
+  const [armed, setArmed] = useState<string | null>(null)
   const today = isoDate(new Date())
   const outNow = (id: string) => reservations.some((r) => r.carId === id && r.status === 'picked-up')
   const nextBooking = (id: string) =>
@@ -155,7 +156,11 @@ function Inventory() {
                   <td className="px-4 py-3">
                     <div className="flex justify-end gap-1">
                       <button className="rounded-full p-2 hover:bg-muted" aria-label={`Edit ${c.model}`} onClick={() => setEditing(c)}><Pencil className="h-4 w-4" /></button>
-                      <button className="rounded-full p-2 text-danger hover:bg-muted" aria-label={`Delete ${c.model}`} onClick={() => { if (confirm(`Delete ${c.make} ${c.model} from inventory?`)) removeCar(c.id) }}><Trash2 className="h-4 w-4" /></button>
+                      {armed === c.id ? (
+                        <button className="btn bg-danger px-3 py-1.5 text-background" onClick={() => { removeCar(c.id); setArmed(null) }} onBlur={() => setArmed(null)} autoFocus>Delete</button>
+                      ) : (
+                        <button className="rounded-full p-2 text-danger hover:bg-muted" aria-label={`Delete ${c.model}`} onClick={() => setArmed(c.id)}><Trash2 className="h-4 w-4" /></button>
+                      )}
                     </div>
                   </td>
                 </tr>
@@ -245,10 +250,17 @@ function Bookings() {
 
 export default function Staff() {
   const { cars, reservations, resetDemo } = useStore()
-  const [unlocked, setUnlocked] = useState(() => sessionStorage.getItem('motion.staff') === '1')
+  const [unlocked, setUnlocked] = useState(() => {
+    try {
+      return sessionStorage.getItem('motion.staff') === '1'
+    } catch {
+      return false
+    }
+  })
   const [pin, setPin] = useState('')
   const [pinError, setPinError] = useState('')
   const [tab, setTab] = useState<'bookings' | 'inventory'>('bookings')
+  const [resetArmed, setResetArmed] = useState(false)
   const today = isoDate(new Date())
 
   if (!unlocked) {
@@ -259,7 +271,11 @@ export default function Staff() {
           onSubmit={(e) => {
             e.preventDefault()
             if (pin === DEMO_PIN) {
-              sessionStorage.setItem('motion.staff', '1')
+              try {
+                sessionStorage.setItem('motion.staff', '1')
+              } catch {
+                /* ignore */
+              }
               setUnlocked(true)
             } else setPinError('That PIN is not right.')
           }}
@@ -288,8 +304,8 @@ export default function Staff() {
     <div className="container-page pt-6">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <h1 className="text-4xl font-semibold tracking-tighter">Dashboard</h1>
-        <button className="text-sm text-muted-foreground underline underline-offset-4 hover:text-foreground" onClick={() => { if (confirm('Reset inventory and delete all demo bookings?')) resetDemo() }}>
-          Reset demo data
+        <button className="text-sm text-muted-foreground underline underline-offset-4 hover:text-foreground" onClick={() => { if (resetArmed) { resetDemo(); setResetArmed(false) } else setResetArmed(true) }} onBlur={() => setResetArmed(false)}>
+          {resetArmed ? 'Click again to erase all bookings' : 'Reset demo data'}
         </button>
       </div>
       <dl className="mt-8 grid grid-cols-2 gap-px overflow-hidden rounded-3xl border border-border bg-border md:grid-cols-4">
