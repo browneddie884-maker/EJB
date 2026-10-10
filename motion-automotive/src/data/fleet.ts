@@ -1,12 +1,13 @@
 import type { Car } from './types'
 
-// Stand-in photos (Unsplash), bundled from src/assets/fleet/<car id>.jpg
-const photos = import.meta.glob<string>('../assets/fleet/*.jpg', { eager: true, import: 'default' })
-const photo = (carId: string) => photos[`../assets/fleet/${carId}.jpg`] ?? ''
+// Photos bundled from src/assets/fleet/<car id>.webp (or .jpg/.jpeg/.png). WebP keeps pages fast.
+const photos = import.meta.glob<string>('../assets/fleet/*.{webp,jpg,jpeg,png}', { eager: true, import: 'default' })
+const photo = (carId: string) =>
+  ['webp', 'jpg', 'jpeg', 'png'].map((ext) => photos[`../assets/fleet/${carId}.${ext}`]).find(Boolean) ?? ''
 
 /**
  * Starter inventory. Photos are Unsplash stand-ins matched to each model.
- * To use real shots of the client's cars, replace the file in src/assets/fleet/ with the same name,
+ * To use real shots of the client's cars, drop a photo in src/assets/fleet/ named after the car id (WebP preferred),
  * or set `image` to any URL from the staff dashboard.
  * Daily rates, plates and mileage are SAMPLE data.
  */

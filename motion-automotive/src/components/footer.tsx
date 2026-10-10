@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import { business } from '@/config/business'
 import { landingPages } from '@/config/landing-pages'
+import { LegalLinks } from './legal-links'
 import { Logo } from './logo'
 import { SocialLinks } from './social-links'
 
@@ -34,8 +35,9 @@ export function Footer() {
           ))}
         </div>
       </div>
-      <div className="container-page pb-8 text-xs text-muted-foreground">
-        &copy; {new Date().getFullYear()} {business.name}
+      <div className="container-page flex flex-col gap-3 pb-8 text-xs text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
+        <span>&copy; {new Date().getFullYear()} {business.name}</span>
+        <LegalLinks />
       </div>
     </footer>
   )

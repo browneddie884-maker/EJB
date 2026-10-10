@@ -12,7 +12,6 @@
  */
 import { motion, useReducedMotion, useSpring } from "motion/react";
 import React, { useState, useRef, useEffect, createContext, useContext } from "react";
-import confetti from "canvas-confetti";
 import { Link } from "react-router-dom";
 import { Check, Star as LucideStar } from "lucide-react";
 import NumberFlow from "@number-flow/react";
@@ -215,7 +214,8 @@ function PricingToggle({ options, savings }: { options: [string, string]; saving
       // canvas-confetti needs literal colors, so read the theme tokens here.
       const css = getComputedStyle(document.documentElement);
       const token = (name: string, fallback: string) => css.getPropertyValue(name).trim() || fallback;
-      confetti({
+      // Loaded on first use so it stays out of the initial page download.
+      void import("canvas-confetti").then(({ default: confetti }) => confetti({
         particleCount: 80,
         spread: 80,
         origin: { x: (rect.left + rect.width / 2) / window.innerWidth, y: (rect.top + rect.height / 2) / window.innerHeight },
@@ -225,7 +225,7 @@ function PricingToggle({ options, savings }: { options: [string, string]; saving
         decay: 0.94,
         startVelocity: 30,
         disableForReducedMotion: true,
-      });
+      }));
     }
   };
 

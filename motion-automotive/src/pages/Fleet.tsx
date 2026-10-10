@@ -6,6 +6,8 @@ import { WorksWheel } from '@/components/ui/works-wheel'
 import type { Car } from '@/data/types'
 import { categories } from '@/data/types'
 import { useStore } from '@/store/store'
+import { business } from '@/config/business'
+import { useSeo } from '@/lib/seo'
 import { addDays, cn, isoDate, money, prettyDate } from '@/lib/utils'
 
 const typeLabel: Record<string, string> = { Sedan: 'Sedans', SUV: 'SUVs', Truck: 'Trucks', Electric: 'Electric cars', Sports: 'Sports cars', Luxury: 'Luxury cars' }
@@ -58,6 +60,7 @@ function FleetWheel({ results, label, carry }: { results: { car: Car; available:
 }
 
 export default function Fleet() {
+  useSeo(`Rental Fleet: Cars, SUVs & Trucks | ${business.name}`, 'Browse every car, SUV, truck and EV we rent in Baton Rouge, check availability for your dates and book online.', '/fleet')
   const { cars, isAvailable } = useStore()
   const [params, setParams] = useSearchParams()
   const type = params.get('type') ?? ''

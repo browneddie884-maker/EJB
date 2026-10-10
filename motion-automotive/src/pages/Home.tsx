@@ -1,20 +1,24 @@
+import { lazy, Suspense } from 'react'
 import { Link, useHref, useNavigate } from 'react-router-dom'
 import { motion, useReducedMotion } from 'motion/react'
 import { ArrowUpRight, Check, FileText, ShieldCheck } from 'lucide-react'
 import DigitalSerenity from '@/components/ui/digital-serenity-animated-landing-page'
-import { CinematicFooter } from '@/components/ui/motion-footer'
 import { PricingSection, type PricingPlan } from '@/components/ui/pricing'
 import { QuickSearch } from '@/components/quick-search'
+import { LegalLinks } from '@/components/legal-links'
 import { Logo } from '@/components/logo'
 import { SocialLinks } from '@/components/social-links'
 import { landingPages } from '@/config/landing-pages'
-import { businessJsonLd } from '@/lib/seo'
+import { businessJsonLd, useSeo } from '@/lib/seo'
 import { CarImage } from '@/components/car-image'
 import { MakeLogo } from '@/components/make-logo'
 import { business, coveragePlans } from '@/config/business'
 import { categories, type Car, type Category } from '@/data/types'
 import { useStore } from '@/store/store'
 import { cn, money } from '@/lib/utils'
+
+// The footer's scroll animation library is only needed further down, so it loads after the page.
+const CinematicFooter = lazy(() => import('@/components/ui/motion-footer').then((m) => ({ default: m.CinematicFooter })))
 
 const categoryCopy: Record<Category, string> = {
   Sedan: 'Easy on fuel, easy to park.',
@@ -185,6 +189,11 @@ function useAppLink() {
 }
 
 export default function Home() {
+  useSeo(
+    `${business.name} | Car, Truck & SUV Rental in Baton Rouge`,
+    'Rent sedans, SUVs, trucks, EVs and sports cars in Baton Rouge. Pick up at our lot, the airport or Bluebonnet Blvd. Book online with your own insurance or ours.',
+    '/',
+  )
   const { cars } = useStore()
   const links = useAppLink()
   const navigate = useNavigate()
@@ -287,24 +296,31 @@ export default function Home() {
       </section>
 
       <div className="mt-28">
-        <CinematicFooter
-          giantText="MOTION"
-          heading="Ready to drive?"
-          marquee={['Sedans to sports cars', 'Your insurance or ours', 'Free cancellation up to 48 hours', 'Pickup at the Baton Rouge airport', 'Clear daily rates']}
-          primaryLinks={[
-            { label: 'Find a car', ...links.fleet },
-            { label: 'My booking', ...links.booking },
-          ]}
-          secondaryLinks={[
-            { label: business.phone, href: `tel:${business.phone.replace(/[^\d+]/g, '')}` },
-            { label: business.email, href: `mailto:${business.email}` },
-            ...landingLinks,
-            { label: 'Staff login', ...links.staff },
-          ]}
-          social={<SocialLinks className="mt-2 justify-center" iconClassName="footer-glass-pill h-11 w-11" />}
-          copyright={`© ${new Date().getFullYear()} ${business.name}`}
-          badge={<span className="text-[10px] font-bold tracking-widest text-muted-foreground uppercase md:text-xs">Open {business.hours}</span>}
-        />
+        <Suspense fallback={<div className="min-h-screen" />}>
+          <CinematicFooter
+            giantText="MOTION"
+            heading="Ready to drive?"
+            marquee={['Sedans to sports cars', 'Your insurance or ours', 'Free cancellation up to 48 hours', 'Pickup at the Baton Rouge airport', 'Clear daily rates']}
+            primaryLinks={[
+              { label: 'Find a car', ...links.fleet },
+              { label: 'My booking', ...links.booking },
+            ]}
+            secondaryLinks={[
+              { label: business.phone, href: `tel:${business.phone.replace(/[^\d+]/g, '')}` },
+              { label: business.email, href: `mailto:${business.email}` },
+              ...landingLinks,
+              { label: 'Staff login', ...links.staff },
+            ]}
+            social={<SocialLinks className="mt-2 justify-center" iconClassName="footer-glass-pill h-11 w-11" />}
+            copyright={
+              <span className="flex flex-col items-center gap-2 md:items-start">
+                <span>© {new Date().getFullYear()} {business.name}</span>
+                <LegalLinks className="justify-center font-medium tracking-normal normal-case md:justify-start" />
+              </span>
+            }
+            badge={<span className="text-[10px] font-bold tracking-widest text-muted-foreground uppercase md:text-xs">Open {business.hours}</span>}
+          />
+        </Suspense>
       </div>
     </>
   )

@@ -7,9 +7,11 @@ import { PriceSummary } from '@/components/price-summary'
 import { business, coveragePlans, extras, type CoveragePlanId } from '@/config/business'
 import type { Driver, Insurance } from '@/data/types'
 import { quote } from '@/lib/pricing'
+import { HONEYPOT_NAME, spamCheck } from '@/lib/spam'
 import { currentSource, trackBeginBooking, trackBooking } from '@/lib/analytics'
 import { addDays, cn, isoDate, money, prettyDate } from '@/lib/utils'
 import { useStore } from '@/store/store'
+import { useSeo } from '@/lib/seo'
 import NotFound from './NotFound'
 
 function Step({ n, title, children }: { n: number; title: string; children: ReactNode }) {
@@ -37,12 +39,15 @@ function Field({ label, error, children, hint }: { label: string; error?: string
 
 type Errors = Partial<Record<string, string>>
 
+const US_STATES = 'AL AK AZ AR CA CO CT DE DC FL GA HI ID IL IN IA KS KY LA ME MD MA MI MN MS MO MT NE NV NH NJ NM NY NC ND OH OK OR PA RI SC SD TN TX UT VT VA WA WV WI WY'.split(' ')
+
 export default function Book() {
   const { id = '' } = useParams()
   const [params] = useSearchParams()
   const navigate = useNavigate()
   const { getCar, isAvailable, bookedRanges, createReservation } = useStore()
   const car = getCar(id)
+  useSeo(`Reserve ${car ? `the ${car.make} ${car.model}` : 'a car'} | ${business.name}`, 'Pick dates, insurance and extras, and confirm your rental.', `/book/${id}`, { noindex: true })
   const today = isoDate(new Date())
 
   const [from, setFrom] = useState(params.get('from') ?? addDays(today, 1))
@@ -56,6 +61,9 @@ export default function Book() {
   const [driver, setDriver] = useState<Driver>({ firstName: '', lastName: '', email: '', phone: '', licenseNumber: '', licenseState: '', age: 30 })
   const [agree, setAgree] = useState(false)
   const [submitted, setSubmitted] = useState(false)
+  const [honeypot, setHoneypot] = useState('')
+  const [startedAt] = useState(() => Date.now())
+  const [blocked, setBlocked] = useState('')
 
   const insurance: Insurance = insuranceType === 'own' ? { type: 'own', ...own } : { type: 'motion', plan }
   const q = useMemo(
@@ -86,17 +94,23 @@ export default function Book() {
     if (insuranceType === 'own') {
       if (!own.carrier.trim()) e.carrier = 'Enter your insurance company.'
       if (!own.policyNumber.trim()) e.policyNumber = 'Enter your policy number.'
+      else if (own.policyNumber.trim().length < 4) e.policyNumber = 'That policy number looks too short.'
       if (!own.expires) e.expires = 'Enter the expiry date.'
       else if (own.expires < to) e.expires = 'Your policy must be active for the whole rental.'
       if (!ownConfirmed) e.ownConfirmed = 'Please confirm your policy covers rentals.'
     }
-    if (!driver.firstName.trim()) e.firstName = 'Required.'
-    if (!driver.lastName.trim()) e.lastName = 'Required.'
-    if (!/^\S+@\S+\.\S+$/.test(driver.email)) e.email = 'Enter a valid email.'
-    if (driver.phone.replace(/\D/g, '').length < 10) e.phone = 'Enter a 10 digit phone number.'
-    if (!driver.licenseNumber.trim()) e.licenseNumber = 'Required.'
-    if (!driver.licenseState.trim()) e.licenseState = 'Required.'
-    if (!driver.age || driver.age < business.minDriverAge) e.age = `Drivers must be ${business.minDriverAge} or older.`
+    const name = /^[\p{L}][\p{L} .'-]{0,49}$/u
+    if (!driver.firstName.trim()) e.firstName = 'Enter your first name.'
+    else if (!name.test(driver.firstName.trim())) e.firstName = 'Use letters only.'
+    if (!driver.lastName.trim()) e.lastName = 'Enter your last name.'
+    else if (!name.test(driver.lastName.trim())) e.lastName = 'Use letters only.'
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(driver.email.trim())) e.email = 'Enter a valid email, like name@example.com.'
+    const digits = driver.phone.replace(/\D/g, '')
+    if (!(digits.length === 10 || (digits.length === 11 && digits.startsWith('1')))) e.phone = 'Enter a 10 digit US phone number.'
+    if (!/^[A-Za-z0-9-]{4,20}$/.test(driver.licenseNumber.trim())) e.licenseNumber = 'Enter the number as shown on your license (4 to 20 letters or digits).'
+    if (!US_STATES.includes(driver.licenseState.trim().toUpperCase())) e.licenseState = 'Use the 2 letter state code, like LA.'
+    if (!Number.isInteger(driver.age) || driver.age < business.minDriverAge) e.age = `Drivers must be ${business.minDriverAge} or older.`
+    else if (driver.age > 99) e.age = 'Enter a valid age.'
     if (!agree) e.agree = 'Please accept the rental terms.'
     return e
   }
@@ -108,9 +122,15 @@ export default function Book() {
       requestAnimationFrame(() => document.querySelector('.field-error')?.scrollIntoView({ behavior: 'smooth', block: 'center' }))
       return
     }
+    const spam = spamCheck({ honeypot, startedAt })
+    if (spam) {
+      setBlocked(spam === 'rate-limit' ? `Too many bookings from this device in a short time. Please call ${business.phone}.` : 'Something went wrong. Please try again in a moment.')
+      return
+    }
+    setBlocked('')
     const r = createReservation({
       carId: car!.id, pickup: from, dropoff: to, locationId, insurance, extras: chosenExtras,
-      driver: { ...driver, firstName: driver.firstName.trim(), lastName: driver.lastName.trim() },
+      driver: { ...driver, firstName: driver.firstName.trim(), lastName: driver.lastName.trim(), email: driver.email.trim(), licenseNumber: driver.licenseNumber.trim().toUpperCase(), licenseState: driver.licenseState.trim().toUpperCase() },
       total: q!.total, deposit: q!.deposit, source: currentSource(),
     })
     trackBooking(r, car!)
@@ -132,6 +152,13 @@ export default function Book() {
       <h1 className="mt-4 text-4xl font-semibold tracking-tighter sm:text-5xl">Reserve your {car.make} {car.model}</h1>
 
       <form onSubmit={submit} noValidate className="mt-10 grid gap-12 lg:grid-cols-[1fr_380px]">
+        {/* Spam trap: hidden from people and screen readers, so only bots fill it in. */}
+        <div aria-hidden="true" className="absolute -left-[9999px] h-px w-px overflow-hidden">
+          <label>
+            Company website
+            <input type="text" name={HONEYPOT_NAME} tabIndex={-1} autoComplete="off" value={honeypot} onChange={(e) => setHoneypot(e.target.value)} />
+          </label>
+        </div>
         <div className="space-y-12">
           <Step n={1} title="Trip">
             <div className="grid gap-6">
@@ -234,7 +261,7 @@ export default function Book() {
               <Field label="Phone" error={errors.phone}><input type="tel" className="field" autoComplete="tel" {...d('phone')} /></Field>
               <Field label="Driver's license number" error={errors.licenseNumber}><input className="field" autoComplete="off" {...d('licenseNumber')} /></Field>
               <div className="grid grid-cols-2 gap-4">
-                <Field label="License state" error={errors.licenseState}><input className="field" maxLength={2} placeholder="TX" {...d('licenseState')} /></Field>
+                <Field label="License state" error={errors.licenseState}><input className="field uppercase" maxLength={2} placeholder="LA" autoComplete="address-level1" {...d('licenseState')} /></Field>
                 <Field label="Driver age" error={errors.age} hint={driver.age < business.youngDriverAge ? `Under ${business.youngDriverAge}: ${money(business.youngDriverFeePerDay)}/day fee` : undefined}>
                   <input type="number" className="field" min={16} max={99} {...d('age')} />
                 </Field>
@@ -258,11 +285,15 @@ export default function Book() {
             <label className="mt-5 flex gap-3 text-sm">
               <input type="checkbox" className="mt-0.5 h-4 w-4 accent-[var(--signal)]" checked={agree} onChange={(e) => setAgree(e.target.checked)} />
               <span>
-                I agree to the rental terms. Free cancellation up to {business.freeCancellationHours} hours before pickup.
+                I agree to the{' '}
+                <Link to="/terms" target="_blank" className="font-medium underline underline-offset-4">rental terms</Link>
+                {' '}and{' '}
+                <Link to="/privacy" target="_blank" className="font-medium underline underline-offset-4">privacy policy</Link>. Free cancellation up to {business.freeCancellationHours} hours before pickup.
                 {errors.agree && <span className="field-error mt-1 block">{errors.agree}</span>}
               </span>
             </label>
             <button type="submit" className="btn-signal mt-5 w-full py-3" disabled={!free}>Confirm booking</button>
+            {blocked && <p className="field-error mt-3 text-center" role="alert">{blocked}</p>}
             <p className="mt-3 text-center text-xs text-muted-foreground">Nothing is charged now. You pay at pickup.</p>
           </div>
         </aside>

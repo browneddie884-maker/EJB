@@ -7,12 +7,24 @@ import { describeSource } from '@/lib/analytics'
 import { categories, type Car, type CarStatus, type ReservationStatus } from '@/data/types'
 import { cn, isoDate, money, prettyDate } from '@/lib/utils'
 import { useStore } from '@/store/store'
+import { useSeo } from '@/lib/seo'
 
 /**
  * Staff area. The PIN gate is a demo convenience only, not real security:
  * before launch, put this behind real authentication on the backend.
  */
-const DEMO_PIN = '2468'
+// Only a SHA-256 fingerprint of the PIN ships to the browser, never the PIN itself.
+// Set VITE_STAFF_PIN_HASH to sha256("motion-staff:" + newPin) to change it. This is still a
+// browser-side lock: replace it with real staff accounts when bookings move to a database.
+const PIN_HASH = (import.meta.env.VITE_STAFF_PIN_HASH as string | undefined) ?? 'fa37fe8c62105f2e0622370cfbdbea3ded2241cbbf44ba5a8423113cebb81225'
+const SHOW_DEMO_PIN = import.meta.env.DEV || import.meta.env.VITE_DEMO === '1'
+
+async function pinMatches(pin: string) {
+  const bytes = new TextEncoder().encode(`motion-staff:${pin}`)
+  const digest = await crypto.subtle.digest('SHA-256', bytes)
+  const hex = [...new Uint8Array(digest)].map((b) => b.toString(16).padStart(2, '0')).join('')
+  return hex === PIN_HASH
+}
 
 const emptyCar: Car = {
   id: '', make: '', model: '', year: new Date().getFullYear(), category: 'Sedan', seats: 5, bags: 2,
@@ -254,6 +266,7 @@ function Bookings() {
 }
 
 export default function Staff() {
+  useSeo(`Staff | ${business.name}`, 'Staff dashboard.', '/staff', { noindex: true })
   const { cars, reservations, resetDemo } = useStore()
   const [unlocked, setUnlocked] = useState(() => {
     try {
@@ -273,9 +286,9 @@ export default function Staff() {
       <div className="container-page flex justify-center pt-16">
         <form
           className="grid w-full max-w-sm gap-4 rounded-3xl border border-border bg-card p-8"
-          onSubmit={(e) => {
+          onSubmit={async (e) => {
             e.preventDefault()
-            if (pin === DEMO_PIN) {
+            if (await pinMatches(pin)) {
               try {
                 sessionStorage.setItem('motion.staff', '1')
               } catch {
@@ -289,7 +302,7 @@ export default function Staff() {
           <label className="grid gap-1.5">
             <span className="field-label">PIN</span>
             <input type="password" inputMode="numeric" className="field" value={pin} onChange={(e) => setPin(e.target.value)} aria-invalid={!!pinError} />
-            <span className="text-xs text-muted-foreground">Demo PIN: {DEMO_PIN}</span>
+            {SHOW_DEMO_PIN && <span className="text-xs text-muted-foreground">Demo PIN: 2468</span>}
             {pinError && <span className="field-error">{pinError}</span>}
           </label>
           <button className="btn-solid py-3">Open dashboard</button>

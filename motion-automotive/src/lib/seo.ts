@@ -13,21 +13,32 @@ function setMeta(selector: string, create: () => HTMLElement, attr: string, valu
   el.setAttribute(attr, value)
 }
 
-/** Sets the tab title, Google snippet and canonical URL for the current page. */
-export function useSeo(title: string, description: string, path?: string) {
+const prop = (name: string) => () => {
+  const m = document.createElement('meta')
+  m.setAttribute('property', name)
+  return m
+}
+const named = (name: string) => () => Object.assign(document.createElement('meta'), { name })
+
+/**
+ * Sets the tab title, Google snippet, social preview text and canonical URL for the current page.
+ * `noindex` keeps private or empty pages (staff, bookings, 404) out of search results.
+ */
+export function useSeo(title: string, description: string, path?: string, opts: { noindex?: boolean } = {}) {
+  const { noindex = false } = opts
   useEffect(() => {
-    const prevTitle = document.title
     document.title = title
-    setMeta('meta[name="description"]', () => Object.assign(document.createElement('meta'), { name: 'description' }), 'content', description)
-    setMeta('meta[property="og:title"]', () => { const m = document.createElement('meta'); m.setAttribute('property', 'og:title'); return m }, 'content', title)
-    setMeta('meta[property="og:description"]', () => { const m = document.createElement('meta'); m.setAttribute('property', 'og:description'); return m }, 'content', description)
+    setMeta('meta[name="description"]', named('description'), 'content', description)
+    setMeta('meta[property="og:title"]', prop('og:title'), 'content', title)
+    setMeta('meta[property="og:description"]', prop('og:description'), 'content', description)
+    setMeta('meta[name="twitter:title"]', named('twitter:title'), 'content', title)
+    setMeta('meta[name="twitter:description"]', named('twitter:description'), 'content', description)
+    setMeta('meta[name="robots"]', named('robots'), 'content', noindex ? 'noindex, nofollow' : 'index, follow')
     if (SITE_URL && path !== undefined) {
       setMeta('link[rel="canonical"]', () => Object.assign(document.createElement('link'), { rel: 'canonical' }), 'href', SITE_URL + path)
+      setMeta('meta[property="og:url"]', prop('og:url'), 'content', SITE_URL + path)
     }
-    return () => {
-      document.title = prevTitle
-    }
-  }, [title, description, path])
+  }, [title, description, path, noindex])
 }
 
 /** schema.org data so Google can show the business, its locations and phone number. */

@@ -213,7 +213,7 @@ export interface CinematicFooterProps {
   heading?: string;
   primaryLinks?: (FooterLink & { icon?: React.ReactNode })[];
   secondaryLinks?: FooterLink[];
-  copyright?: string;
+  copyright?: React.ReactNode;
   /** Small pill in the middle of the bottom bar. */
   badge?: React.ReactNode;
   /** Shown under the secondary links, e.g. social profile icons. */

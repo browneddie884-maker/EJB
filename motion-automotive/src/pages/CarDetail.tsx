@@ -6,6 +6,8 @@ import { CarImage } from '@/components/car-image'
 import { CarSpecs } from '@/components/car-card'
 import { DateRangeCalendar } from '@/components/date-range-calendar'
 import { useStore } from '@/store/store'
+import { business } from '@/config/business'
+import { useSeo } from '@/lib/seo'
 import { addDays, isoDate, money, prettyDate } from '@/lib/utils'
 import NotFound from './NotFound'
 
@@ -14,6 +16,12 @@ export default function CarDetail() {
   const [params, setParams] = useSearchParams()
   const { getCar, isAvailable, reservations, bookedRanges } = useStore()
   const car = getCar(id)
+  useSeo(
+    car ? `Rent the ${car.year} ${car.make} ${car.model} in Baton Rouge | ${business.name}` : `Car not found | ${business.name}`,
+    car ? `${car.year} ${car.make} ${car.model}: ${car.seats} seats, ${car.fuel.toLowerCase()}, from $${car.dailyRate} a day. Pick up in Baton Rouge with your own insurance or ours.` : 'This car is no longer listed.',
+    `/fleet/${id}`,
+    { noindex: !car },
+  )
   useEffect(() => {
     if (car) trackViewCar(car)
     // Once per car, not on every date change.

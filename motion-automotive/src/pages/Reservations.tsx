@@ -9,8 +9,10 @@ import type { Reservation } from '@/data/types'
 import { quote } from '@/lib/pricing'
 import { money, prettyDate } from '@/lib/utils'
 import { useStore } from '@/store/store'
+import { useSeo } from '@/lib/seo'
 
 export function ReservationLookup() {
+  useSeo(`My booking | ${business.name}`, 'Look up your rental with your booking code and last name to change dates or cancel.', '/reservations')
   const { findReservation } = useStore()
   const navigate = useNavigate()
   const [code, setCode] = useState('')
@@ -19,7 +21,16 @@ export function ReservationLookup() {
 
   function submit(e: FormEvent) {
     e.preventDefault()
-    const r = findReservation(code, lastName)
+    if (!/^MA-?[A-Z0-9]{6}$/i.test(code.trim())) {
+      setError('Booking codes look like MA-7K2QX9. Check your confirmation.')
+      return
+    }
+    if (!lastName.trim()) {
+      setError('Enter the last name of the driver on the booking.')
+      return
+    }
+    const normalized = code.trim().toUpperCase().replace(/^MA-?/, 'MA-')
+    const r = findReservation(normalized, lastName)
     if (!r) {
       setError('We could not find a booking with that code and last name.')
       return
@@ -60,6 +71,7 @@ const statusText: Record<Reservation['status'], string> = {
 
 export function ReservationDetail() {
   const { code = '' } = useParams()
+  useSeo(`Booking ${code} | ${business.name}`, 'Your rental booking.', `/reservations/${code}`, { noindex: true })
   const [params] = useSearchParams()
   const { reservations, getCar, isAvailable, bookedRanges, updateReservation, setReservationStatus } = useStore()
   const r = reservations.find((x) => x.code === code)

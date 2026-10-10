@@ -24,6 +24,34 @@ declare global {
 
 let started = false
 
+/** True when at least one tracking tool has an ID, i.e. there is something to consent to. */
+export const trackingConfigured = Boolean(GA_ID || ADS_ID || META_ID)
+
+const CONSENT_KEY = 'motion.consent.v1'
+export type Consent = 'granted' | 'denied'
+
+export function getConsent(): Consent | null {
+  try {
+    const v = localStorage.getItem(CONSENT_KEY)
+    return v === 'granted' || v === 'denied' ? v : null
+  } catch {
+    return null
+  }
+}
+
+/** Saves the visitor's choice. Accepting loads the tags right away; declining keeps them off. */
+export function setConsent(value: Consent) {
+  try {
+    localStorage.setItem(CONSENT_KEY, value)
+  } catch {
+    /* storage unavailable: the choice lasts for this page view */
+  }
+  if (value === 'granted') {
+    initAnalytics()
+    trackPageView(window.location.pathname + window.location.search)
+  }
+}
+
 function addScript(src: string) {
   const s = document.createElement('script')
   s.async = true
@@ -31,9 +59,12 @@ function addScript(src: string) {
   document.head.appendChild(s)
 }
 
-/** Loads the configured tags once. Page views are sent by trackPageView on each route change. */
+/**
+ * Loads the configured tags once, and only after the visitor accepts analytics cookies.
+ * Page views are sent by trackPageView on each route change.
+ */
 export function initAnalytics() {
-  if (started || typeof window === 'undefined') return
+  if (started || typeof window === 'undefined' || getConsent() !== 'granted') return
   started = true
 
   if (GA_ID || ADS_ID) {
