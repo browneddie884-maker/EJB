@@ -31,7 +31,7 @@ import {
 	NavigationMenuList,
 	NavigationMenuTrigger,
 } from '@/components/ui/navigation-menu';
-import { BrandMark } from '@/components/brand-mark';
+import { Logo } from '@/components/logo';
 import { ThemeToggleButton } from '@/components/theme-toggle';
 import { business } from '@/config/business';
 import { cn } from '@/lib/utils';
@@ -79,14 +79,19 @@ export function Header({ overlay = false }: { overlay?: boolean }) {
 	return (
 		<header
 			className={cn('sticky top-0 z-50 w-full border-b border-transparent text-foreground', overlay && '-mb-16', {
-				'bg-background/95 supports-[backdrop-filter]:bg-background/60 border-border backdrop-blur-lg': scrolled || open,
+				'bg-background/95 supports-[backdrop-filter]:bg-background/85 border-border backdrop-blur-lg': scrolled || open,
 			})}
 		>
 			<nav className="container-page flex h-16 items-center justify-between gap-4">
 				<div className="flex items-center gap-5">
-					<Link to="/" onClick={close} className="flex items-center gap-2.5 rounded-md py-2 pr-2 text-lg font-semibold tracking-tight">
-						<BrandMark />
-						{business.name}
+					{/* On the home page the landing shows the big logo, so this one appears once you scroll. */}
+					<Link
+						to="/"
+						onClick={close}
+						aria-label={`${business.name} home`}
+						className={cn('rounded-md py-1 pr-2 transition-opacity duration-300', overlay && !scrolled && !open && 'pointer-events-none opacity-0')}
+					>
+						<Logo eager className="h-9 sm:h-10" />
 					</Link>
 					<NavigationMenu className="hidden md:flex">
 						<NavigationMenuList>

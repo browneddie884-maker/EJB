@@ -38,7 +38,7 @@ export function businessJsonLd() {
     name: business.name,
     telephone: business.phone,
     email: business.email,
-    ...(SITE_URL ? { url: SITE_URL } : {}),
+    ...(SITE_URL ? { url: SITE_URL, logo: `${SITE_URL}/motion-automotive-logo.png`, image: `${SITE_URL}/motion-automotive-logo.png` } : {}),
     areaServed: 'Baton Rouge, LA',
     ...(socialProfiles.length ? { sameAs: socialProfiles.map((s) => s.href) } : {}),
     department: business.locations

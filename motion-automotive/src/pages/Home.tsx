@@ -5,6 +5,7 @@ import DigitalSerenity from '@/components/ui/digital-serenity-animated-landing-p
 import { CinematicFooter } from '@/components/ui/motion-footer'
 import { PricingSection, type PricingPlan } from '@/components/ui/pricing'
 import { QuickSearch } from '@/components/quick-search'
+import { Logo } from '@/components/logo'
 import { SocialLinks } from '@/components/social-links'
 import { landingPages } from '@/config/landing-pages'
 import { businessJsonLd } from '@/lib/seo'
@@ -204,7 +205,7 @@ export default function Home() {
       {/* The landing follows the site's light/dark switch. */}
       <div className="relative text-foreground">
         <DigitalSerenity
-          topLine={business.name}
+          top={<Logo eager className="mx-auto h-auto w-[min(78vw,30rem)]" />}
           headline="Let us put you in Motion."
           subline="Sedans to sports cars, booked in minutes. Bring your own insurance or use ours."
           bottomLine="Choose. Cover. Drive."

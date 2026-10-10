@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import { business } from '@/config/business'
 import { landingPages } from '@/config/landing-pages'
-import { BrandMark } from './brand-mark'
+import { Logo } from './logo'
 import { SocialLinks } from './social-links'
 
 export function Footer() {
@@ -9,7 +9,7 @@ export function Footer() {
     <footer className="mt-24 border-t border-border">
       <div className="container-page grid gap-10 py-12 md:grid-cols-[1.4fr_1fr_1fr_1fr]">
         <div className="space-y-3">
-          <Link to="/" className="flex items-center gap-2.5 font-semibold"><BrandMark />{business.name}</Link>
+          <Link to="/" className="inline-block" aria-label={`${business.name} home`}><Logo className="h-12" /></Link>
           <p className="max-w-[40ch] text-sm leading-relaxed text-muted-foreground">
             Local car rental with clear prices. Bring your own insurance or pick one of ours at checkout.
           </p>

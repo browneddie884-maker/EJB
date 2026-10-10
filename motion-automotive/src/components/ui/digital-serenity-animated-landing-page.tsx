@@ -13,6 +13,8 @@ import { useEffect, useRef, useState, type ReactNode } from 'react'
  */
 interface DigitalSerenityProps {
   topLine?: string
+  /** Replaces the animated top line, e.g. a logo. */
+  top?: ReactNode
   headline?: string
   subline?: string
   bottomLine?: string
@@ -72,6 +74,7 @@ function Words({ text, start, step }: { text: string; start: number; step: numbe
 
 const DigitalSerenity = ({
   topLine = 'Stillness speaks.',
+  top,
   headline = 'Find your center,',
   subline = 'where peace resides and clarity awakens within the soul.',
   bottomLine = 'Observe, accept, let go.',
@@ -169,9 +172,13 @@ const DigitalSerenity = ({
 
       <div className="relative z-10 flex min-h-[100dvh] flex-col items-center justify-between gap-10 px-6 pt-28 pb-10 sm:px-8 md:px-16 md:pb-16">
         <div className="text-center">
-          <p className="font-mono text-xs font-light tracking-[0.2em] text-[var(--ds-ink-soft)] uppercase opacity-90 sm:text-sm">
-            <Words text={topLine} start={0} step={300} />
-          </p>
+          {top ? (
+            <div className="fade-in" style={{ animationDelay: '0.2s' }}>{top}</div>
+          ) : (
+            <p className="font-mono text-xs font-light tracking-[0.2em] text-[var(--ds-ink-soft)] uppercase opacity-90 sm:text-sm">
+              <Words text={topLine} start={0} step={300} />
+            </p>
+          )}
           <div className="mx-auto mt-4 h-px w-12 bg-gradient-to-r from-transparent via-[var(--ds-detail)] to-transparent opacity-40 sm:w-16" />
         </div>
 
