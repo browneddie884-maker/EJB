@@ -44,10 +44,8 @@ export function DateRangeCalendar({
 
   const today = isoDate(new Date())
   // A booking holds the car for the nights from pickup up to (not including) the return day.
-  const disabled: Matcher[] = [
-    { before: toDate(today) },
-    ...booked.map((b) => ({ from: toDate(b.pickup), to: toDate(addDays(b.dropoff, -1)) })),
-  ]
+  const bookedNights: Matcher[] = booked.map((b) => ({ from: toDate(b.pickup), to: toDate(addDays(b.dropoff, -1)) }))
+  const disabled: Matcher[] = [{ before: toDate(today) }, ...bookedNights]
 
   const complete = range?.from && range?.to && isoDate(range.to) > isoDate(range.from)
 
@@ -71,6 +69,11 @@ export function DateRangeCalendar({
         min={1}
         excludeDisabled
         disabled={disabled}
+        showOutsideDays={false}
+        // Unavailable days stay readable: dimmed, and booked ones are struck through.
+        classNames={{ disabled: 'text-muted-foreground opacity-75' }}
+        modifiers={{ booked: bookedNights }}
+        modifiersClassNames={{ booked: 'line-through decoration-danger decoration-2' }}
         className="mx-auto rounded-2xl border border-border bg-card p-3 shadow-sm [--cell-size:--spacing(9)] sm:[--cell-size:--spacing(10)]"
       />
       <p className="text-center text-sm text-muted-foreground" aria-live="polite">

@@ -24,11 +24,11 @@ export function CarCard({ car, available = true, search = '', index = 0 }: { car
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.2 }}
       transition={{ duration: 0.55, delay: (index % 3) * 0.06, ease: [0.16, 1, 0.3, 1] }}
-      className={cn('group relative flex flex-col', !available && 'opacity-60')}
+      className="group relative flex flex-col"
     >
       <Link to={`/fleet/${car.id}${search}`} className="absolute inset-0 z-10 rounded-3xl" aria-label={`${car.make} ${car.model} details`} />
       <div className="overflow-hidden rounded-3xl">
-        <CarImage car={car} className="aspect-[4/3] w-full transition-transform duration-500 group-hover:scale-[1.03]" />
+        <CarImage car={car} className={cn('aspect-[4/3] w-full transition-transform duration-500 group-hover:scale-[1.03]', !available && 'opacity-50 grayscale')} />
       </div>
       <div className="flex items-start justify-between gap-4 px-1 pt-4">
         <div>

@@ -186,7 +186,8 @@ export function WorksWheel({
       bow: cardH * BOW,
       depth: cardH * LENS,
       title: cardH * TITLE,
-      index: cardH * INDEX,
+      // Never smaller than 13px, so the index stays legible on a short stage.
+      index: Math.max(13, cardH * INDEX),
     };
   }, [stage, count]);
 
