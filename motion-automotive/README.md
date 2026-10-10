@@ -30,6 +30,7 @@ npm run build    # static site in dist/
 ## Before launch
 
 1. **Business details**: edit `src/config/business.ts` (phone, email, address, hours, rates, deposit, tax, coverage prices). All current values are samples.
+   Social profiles go in `business.social` (Instagram, Facebook, TikTok, X, YouTube, Google reviews); each icon appears in both footers once its link is filled in, and the links are added to the Google business data.
 2. **Fleet**: edit `src/data/fleet.ts` or use the staff dashboard. Replace the Unsplash stand-in photos with photos of the real cars (put files in `public/fleet/`).
 3. **Backend**: bookings and inventory are stored in the browser (localStorage) for the demo. Connect a database (e.g. Supabase) so staff see customer bookings, and replace the staff PIN with real login.
 4. **Email and payments**: add confirmation emails and, if wanted, card holds/payments (e.g. Stripe). Checkout currently says "pay at pickup".

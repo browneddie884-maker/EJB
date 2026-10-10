@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import { business } from '@/config/business'
+import { socialProfiles } from '@/components/social-links'
 
 const SITE_URL = (import.meta.env.VITE_SITE_URL as string | undefined)?.replace(/\/$/, '')
 
@@ -39,6 +40,7 @@ export function businessJsonLd() {
     email: business.email,
     ...(SITE_URL ? { url: SITE_URL } : {}),
     areaServed: 'Baton Rouge, LA',
+    ...(socialProfiles.length ? { sameAs: socialProfiles.map((s) => s.href) } : {}),
     department: business.locations
       .filter((l) => l.address)
       .map((l) => {

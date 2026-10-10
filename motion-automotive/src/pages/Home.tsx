@@ -5,6 +5,7 @@ import DigitalSerenity from '@/components/ui/digital-serenity-animated-landing-p
 import { CinematicFooter } from '@/components/ui/motion-footer'
 import { QuickSearch } from '@/components/quick-search'
 import { SiteNav } from '@/components/site-nav'
+import { SocialLinks } from '@/components/social-links'
 import { landingPages } from '@/config/landing-pages'
 import { businessJsonLd } from '@/lib/seo'
 import { CarImage } from '@/components/car-image'
@@ -258,6 +259,7 @@ export default function Home() {
             ...landingLinks,
             { label: 'Staff login', ...links.staff },
           ]}
+          social={<SocialLinks className="mt-2 justify-center" iconClassName="footer-glass-pill h-11 w-11" />}
           copyright={`© ${new Date().getFullYear()} ${business.name}`}
           badge={<span className="text-[10px] font-bold tracking-widest text-muted-foreground uppercase md:text-xs">Open {business.hours}</span>}
         />

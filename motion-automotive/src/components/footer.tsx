@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import { business } from '@/config/business'
 import { landingPages } from '@/config/landing-pages'
 import { BrandMark } from './brand-mark'
+import { SocialLinks } from './social-links'
 
 export function Footer() {
   return (
@@ -18,6 +19,7 @@ export function Footer() {
           <a className="block text-muted-foreground hover:text-foreground" href={`tel:${business.phone.replace(/[^\d+]/g, '')}`}>{business.phone}</a>
           <a className="block text-muted-foreground hover:text-foreground" href={`mailto:${business.email}`}>{business.email}</a>
           <p className="text-muted-foreground">{business.hours}</p>
+          <SocialLinks className="pt-2" />
         </div>
         <div className="space-y-2 text-sm">
           <p className="font-medium">Rent</p>

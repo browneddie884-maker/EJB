@@ -8,6 +8,19 @@ export const business = {
   phone: '(555) 014-2290', // TODO: real phone
   email: 'reservations@motionautomotive.com', // TODO: real email
   hours: 'Mon-Sat 8am-7pm, Sun 10am-4pm',
+  /**
+   * Social profiles. Paste each full profile link when the account exists, e.g.
+   * instagram: 'https://www.instagram.com/motionautomotive'. Empty ones stay hidden on the site.
+   */
+  social: {
+    instagram: '',
+    facebook: '',
+    tiktok: '',
+    x: '',
+    youtube: '',
+    /** Google Business Profile reviews link ("Ask for reviews" > copy link). */
+    googleReviews: '',
+  },
   locations: [
     { id: 'main', name: 'Motion Automotive lot', address: '' }, // TODO: lot street address (shown when filled in)
     { id: 'airport', name: 'Baton Rouge airport', address: '9430 Jackie Cochran Dr, Baton Rouge, LA 70807' },

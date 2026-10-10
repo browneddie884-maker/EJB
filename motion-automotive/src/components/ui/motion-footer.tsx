@@ -216,6 +216,8 @@ export interface CinematicFooterProps {
   copyright?: string;
   /** Small pill in the middle of the bottom bar. */
   badge?: React.ReactNode;
+  /** Shown under the secondary links, e.g. social profile icons. */
+  social?: React.ReactNode;
 }
 
 const MarqueeItem = ({ phrases }: { phrases: string[] }) => (
@@ -237,6 +239,7 @@ export function CinematicFooter({
   secondaryLinks = [],
   copyright = `© ${new Date().getFullYear()}`,
   badge,
+  social,
 }: CinematicFooterProps) {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const giantTextRef = useRef<HTMLDivElement>(null);
@@ -357,6 +360,7 @@ export function CinematicFooter({
                   </MagneticButton>
                 ))}
               </div>
+              {social}
             </div>
           </div>
 
