@@ -13,7 +13,7 @@
   --foreground: #111316;
   --card: #ffffff;
   --muted: #e6e8eb;
-  --muted-foreground: #4f5661;
+  --muted-foreground: #3e4550;
   --border: #d6d9de;
   --ring: #111316;
   --signal: #ff5a1f;
@@ -39,7 +39,7 @@
   --foreground: #eef0f2;
   --card: #16181b;
   --muted: #202328;
-  --muted-foreground: #a3a9b2;
+  --muted-foreground: #bcc2cb;
   --border: #2c3036;
   --ring: #eef0f2;
   --signal: #ff6a33;
@@ -111,3 +111,20 @@
 
 @utility container-page { @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
 }
+
+/*
+  Unlayered on purpose: a host page (the artifact viewer, a site builder) may ship its own
+  reset for body font, size and color-scheme. Unlayered rules beat Tailwind's layers, so these
+  keep the site's font, 16px base size and dark-mode form controls wherever it is embedded.
+*/
+html { color-scheme: light; }
+html.dark { color-scheme: dark; }
+html body {
+  margin: 0;
+  font-family: "Geist Variable", ui-sans-serif, system-ui, sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  background-color: var(--background);
+  color: var(--foreground);
+}
+html option { background-color: var(--card); color: var(--foreground); }
