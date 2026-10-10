@@ -40,6 +40,16 @@ export type Driver = {
 
 export type ReservationStatus = 'confirmed' | 'picked-up' | 'returned' | 'cancelled'
 
+/** Where the customer came from, captured from ad tags on their landing URL. */
+export type Source = {
+  utmSource?: string
+  utmMedium?: string
+  utmCampaign?: string
+  gclid?: string
+  fbclid?: string
+  landingPage?: string
+}
+
 export type Reservation = {
   code: string
   carId: string
@@ -53,4 +63,5 @@ export type Reservation = {
   total: number
   deposit: number
   createdAt: string
+  source?: Source
 }

@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { Pencil, Plus, Trash2 } from 'lucide-react'
 import { CarImage } from '@/components/car-image'
 import { business, coveragePlans } from '@/config/business'
+import { describeSource } from '@/lib/analytics'
 import { categories, type Car, type CarStatus, type ReservationStatus } from '@/data/types'
 import { cn, isoDate, money, prettyDate } from '@/lib/utils'
 import { useStore } from '@/store/store'
@@ -197,7 +198,7 @@ function Bookings() {
         </div>
       ) : (
         <div className="overflow-x-auto rounded-3xl border border-border">
-          <table className="w-full min-w-[980px] text-sm">
+          <table className="w-full min-w-[1100px] text-sm">
             <thead className="bg-muted text-left text-muted-foreground">
               <tr>
                 <th className="px-4 py-3 font-medium">Code</th>
@@ -205,6 +206,7 @@ function Bookings() {
                 <th className="px-4 py-3 font-medium">Vehicle</th>
                 <th className="px-4 py-3 font-medium">Dates</th>
                 <th className="px-4 py-3 font-medium">Pickup</th>
+                <th className="px-4 py-3 font-medium">Came from</th>
                 <th className="px-4 py-3 font-medium">Insurance</th>
                 <th className="px-4 py-3 font-medium">Total</th>
                 <th className="px-4 py-3 font-medium">Status</th>
@@ -223,6 +225,7 @@ function Bookings() {
                     <td className="px-4 py-3">{car ? `${car.make} ${car.model}` : 'Removed'}</td>
                     <td className="px-4 py-3 whitespace-nowrap">{prettyDate(r.pickup)} to {prettyDate(r.dropoff)}</td>
                     <td className="px-4 py-3">{business.locations.find((l) => l.id === r.locationId)?.name ?? 'Not set'}</td>
+                    <td className="px-4 py-3">{describeSource(r.source)}</td>
                     <td className="px-4 py-3">
                       {r.insurance.type === 'own' ? (
                         <><p className="font-medium">Own: {r.insurance.carrier}</p><p className="text-muted-foreground">#{r.insurance.policyNumber}, exp {r.insurance.expires}</p></>

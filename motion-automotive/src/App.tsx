@@ -6,6 +6,8 @@ import Book from '@/pages/Book'
 import CarDetail from '@/pages/CarDetail'
 import Fleet from '@/pages/Fleet'
 import Home from '@/pages/Home'
+import Landing from '@/pages/Landing'
+import { landingPages } from '@/config/landing-pages'
 import NotFound from '@/pages/NotFound'
 import { ReservationDetail, ReservationLookup } from '@/pages/Reservations'
 import Staff from '@/pages/Staff'
@@ -27,6 +29,9 @@ export default function App() {
               <Route path="reservations" element={<ReservationLookup />} />
               <Route path="reservations/:code" element={<ReservationDetail />} />
               <Route path="staff" element={<Staff />} />
+              {landingPages.map((p) => (
+                <Route key={p.slug} path={p.slug} element={<Landing page={p} />} />
+              ))}
               <Route path="*" element={<NotFound />} />
             </Route>
           </Routes>

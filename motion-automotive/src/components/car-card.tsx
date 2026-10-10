@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import { motion, useReducedMotion } from 'motion/react'
 import { Briefcase, Fuel, Users, Zap } from 'lucide-react'
 import type { Car } from '@/data/types'
+import { business } from '@/config/business'
 import { cn, money } from '@/lib/utils'
 import { CarImage } from './car-image'
 
@@ -16,7 +17,7 @@ export function CarSpecs({ car, className }: { car: Car; className?: string }) {
   )
 }
 
-export function CarCard({ car, available = true, search = '', index = 0 }: { car: Car; available?: boolean; search?: string; index?: number }) {
+export function CarCard({ car, available = true, search = '', index = 0, weekly = false }: { car: Car; available?: boolean; search?: string; index?: number; weekly?: boolean }) {
   const reduce = useReducedMotion()
   return (
     <motion.article
@@ -36,8 +37,8 @@ export function CarCard({ car, available = true, search = '', index = 0 }: { car
           <h3 className="text-lg font-semibold tracking-tight">{car.model}</h3>
         </div>
         <p className="text-right">
-          <span className="text-lg font-semibold">{money(car.dailyRate)}</span>
-          <span className="block text-xs text-muted-foreground">per day</span>
+          <span className="text-lg font-semibold">{money(weekly ? Math.round(car.dailyRate * business.weeklyMinDays * (1 - business.weeklyDiscount)) : car.dailyRate)}</span>
+          <span className="block text-xs text-muted-foreground">{weekly ? `per ${business.weeklyMinDays} days` : 'per day'}</span>
         </p>
       </div>
       <div className="flex items-center justify-between gap-3 px-1 pt-2">

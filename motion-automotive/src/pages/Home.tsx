@@ -5,6 +5,8 @@ import DigitalSerenity from '@/components/ui/digital-serenity-animated-landing-p
 import { CinematicFooter } from '@/components/ui/motion-footer'
 import { QuickSearch } from '@/components/quick-search'
 import { SiteNav } from '@/components/site-nav'
+import { landingPages } from '@/config/landing-pages'
+import { businessJsonLd } from '@/lib/seo'
 import { CarImage } from '@/components/car-image'
 import { MakeLogo } from '@/components/make-logo'
 import { business, coveragePlans } from '@/config/business'
@@ -150,10 +152,21 @@ function useAppLink() {
 export default function Home() {
   const { cars } = useStore()
   const links = useAppLink()
+  const navigate = useNavigate()
+  const landingHrefBase = useHref('/')
+  const landingLinks = landingPages.map((p) => ({
+    label: p.linkLabel,
+    href: `${landingHrefBase.replace(/\/$/, '')}/${p.slug}`,
+    onClick: (e: React.MouseEvent) => {
+      e.preventDefault()
+      navigate(`/${p.slug}`)
+    },
+  }))
   const makes = [...new Set(cars.filter((c) => c.status !== 'retired').map((c) => c.make))].sort()
 
   return (
     <>
+      <script type="application/ld+json">{JSON.stringify(businessJsonLd())}</script>
       {/* The landing follows the site's light/dark switch. */}
       <div className="relative text-foreground">
         <div className="absolute inset-x-0 top-0 z-30">
@@ -242,7 +255,7 @@ export default function Home() {
           secondaryLinks={[
             { label: business.phone, href: `tel:${business.phone.replace(/[^\d+]/g, '')}` },
             { label: business.email, href: `mailto:${business.email}` },
-            { label: 'Insurance options', ...links.insurance },
+            ...landingLinks,
             { label: 'Staff login', ...links.staff },
           ]}
           copyright={`© ${new Date().getFullYear()} ${business.name}`}

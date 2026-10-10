@@ -1,4 +1,4 @@
-import { useMemo, useState, type FormEvent, type ReactNode } from 'react'
+import { useEffect, useMemo, useRef, useState, type FormEvent, type ReactNode } from 'react'
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { ArrowLeft, Check, FileText, ShieldCheck } from 'lucide-react'
 import { CarImage } from '@/components/car-image'
@@ -7,6 +7,7 @@ import { PriceSummary } from '@/components/price-summary'
 import { business, coveragePlans, extras, type CoveragePlanId } from '@/config/business'
 import type { Driver, Insurance } from '@/data/types'
 import { quote } from '@/lib/pricing'
+import { currentSource, trackBeginBooking, trackBooking } from '@/lib/analytics'
 import { addDays, cn, isoDate, money, prettyDate } from '@/lib/utils'
 import { useStore } from '@/store/store'
 import NotFound from './NotFound'
@@ -63,6 +64,15 @@ export default function Book() {
     [car, from, to, insuranceType, plan, chosenExtras, locationId, driver.age],
   )
 
+  // Report the start of checkout once per visit to this page.
+  const reported = useRef(false)
+  useEffect(() => {
+    if (car && q && !reported.current) {
+      reported.current = true
+      trackBeginBooking(car, q.total)
+    }
+  }, [car, q])
+
   if (!car || car.status === 'retired') return <NotFound />
   const free = isAvailable(car.id, from, to)
   // Errors appear after the first submit attempt, then update live as fields are fixed.
@@ -101,8 +111,9 @@ export default function Book() {
     const r = createReservation({
       carId: car!.id, pickup: from, dropoff: to, locationId, insurance, extras: chosenExtras,
       driver: { ...driver, firstName: driver.firstName.trim(), lastName: driver.lastName.trim() },
-      total: q!.total, deposit: q!.deposit,
+      total: q!.total, deposit: q!.deposit, source: currentSource(),
     })
+    trackBooking(r, car!)
     navigate(`/reservations/${r.code}?new=1`)
   }
 

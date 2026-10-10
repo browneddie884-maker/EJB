@@ -1,7 +1,24 @@
 import { useEffect } from 'react'
+import { captureSource, initAnalytics, trackPageView } from '@/lib/analytics'
 import { Outlet, useLocation } from 'react-router-dom'
 import { Footer } from './footer'
 import { SiteNav } from './site-nav'
+
+function Analytics() {
+  const { pathname, search } = useLocation()
+  useEffect(() => {
+    initAnalytics()
+    // Ad tags can sit before the # (hash routing) or in the router's own query string.
+    captureSource(window.location.search)
+  }, [])
+  useEffect(() => {
+    captureSource(search)
+    // Let the page set its title first.
+    const t = window.setTimeout(() => trackPageView(pathname + search), 0)
+    return () => window.clearTimeout(t)
+  }, [pathname, search])
+  return null
+}
 
 function ScrollManager() {
   const { pathname, hash } = useLocation()
@@ -24,6 +41,7 @@ export function Layout() {
   return (
     <div className="flex min-h-[100dvh] flex-col">
       <ScrollManager />
+      <Analytics />
       {pathname !== '/' && <SiteNav />}
       <main className="flex-1">
         <Outlet />

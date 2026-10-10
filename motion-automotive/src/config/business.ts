@@ -20,6 +20,10 @@ export const business = {
   /** Refundable hold on the driver's card. Larger when the renter brings their own policy. */
   deposit: { ownInsurance: 400, motionCoverage: 200 },
   freeCancellationHours: 48,
+  /** Rentals of this many days or more get the weekly discount below. */
+  weeklyMinDays: 7,
+  /** SAMPLE: share taken off the car's daily rate for weekly rentals. */
+  weeklyDiscount: 0.15,
 }
 
 export type CoveragePlanId = 'essential' | 'standard' | 'complete'

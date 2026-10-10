@@ -5,6 +5,8 @@ import { daysBetween } from './utils'
 export type Quote = {
   days: number
   base: number
+  /** Weekly-rate saving on the car, shown as a negative line. */
+  weeklySaving: number
   coverage: number
   extras: number
   youngDriver: number
@@ -24,6 +26,7 @@ export function quote(opts: {
 }): Quote {
   const days = daysBetween(opts.pickup, opts.dropoff)
   const base = opts.car.dailyRate * days
+  const weeklySaving = days >= business.weeklyMinDays ? Math.round(base * business.weeklyDiscount * 100) / 100 : 0
   const ins = opts.insurance
   const plan = ins?.type === 'motion' ? coveragePlans.find((p) => p.id === ins.plan) : undefined
   const coverage = plan ? plan.perDay * days : 0
@@ -33,8 +36,8 @@ export function quote(opts: {
   }, 0)
   const youngDriver =
     opts.driverAge && opts.driverAge < business.youngDriverAge ? business.youngDriverFeePerDay * days : 0
-  const subtotal = base + coverage + extras + youngDriver
+  const subtotal = base - weeklySaving + coverage + extras + youngDriver
   const tax = Math.round(subtotal * business.taxRate * 100) / 100
   const deposit = opts.insurance?.type === 'own' ? business.deposit.ownInsurance : business.deposit.motionCoverage
-  return { days, base, coverage, extras, youngDriver, tax, total: Math.round((subtotal + tax) * 100) / 100, deposit }
+  return { days, base, weeklySaving, coverage, extras, youngDriver, tax, total: Math.round((subtotal + tax) * 100) / 100, deposit }
 }

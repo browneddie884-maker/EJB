@@ -4,10 +4,10 @@ import { ArrowRight } from 'lucide-react'
 import { business } from '@/config/business'
 import { addDays, cn, isoDate } from '@/lib/utils'
 
-export function QuickSearch({ className }: { className?: string }) {
+export function QuickSearch({ className, defaultLocation }: { className?: string; defaultLocation?: string }) {
   const navigate = useNavigate()
   const today = isoDate(new Date())
-  const [loc, setLoc] = useState(business.locations[0].id)
+  const [loc, setLoc] = useState(defaultLocation ?? business.locations[0].id)
   const [from, setFrom] = useState(addDays(today, 1))
   const [to, setTo] = useState(addDays(today, 4))
   const invalid = to <= from

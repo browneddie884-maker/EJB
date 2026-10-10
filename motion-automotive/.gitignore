@@ -23,3 +23,7 @@ dist-ssr
 *.sln
 *.sw?
 dist-single
+
+# Real tracking IDs stay out of git (see .env.example)
+.env
+.env.local

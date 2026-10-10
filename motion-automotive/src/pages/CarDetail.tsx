@@ -1,4 +1,6 @@
+import { useEffect } from 'react'
 import { Link, useParams, useSearchParams } from 'react-router-dom'
+import { trackViewCar } from '@/lib/analytics'
 import { ArrowLeft, Check, Wrench } from 'lucide-react'
 import { CarImage } from '@/components/car-image'
 import { CarSpecs } from '@/components/car-card'
@@ -12,6 +14,11 @@ export default function CarDetail() {
   const [params, setParams] = useSearchParams()
   const { getCar, isAvailable, reservations, bookedRanges } = useStore()
   const car = getCar(id)
+  useEffect(() => {
+    if (car) trackViewCar(car)
+    // Once per car, not on every date change.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [car?.id])
   if (!car || car.status === 'retired') return <NotFound />
 
   const today = isoDate(new Date())
