@@ -24,6 +24,17 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     document.documentElement.classList.toggle('dark', theme === 'dark')
   }, [theme])
 
+  // Follow an embedding host (e.g. the artifact viewer) when it switches theme.
+  useEffect(() => {
+    const root = document.documentElement
+    const observer = new MutationObserver(() => {
+      const host = root.dataset.theme
+      if (host === 'light' || host === 'dark') setThemeState(host)
+    })
+    observer.observe(root, { attributes: true, attributeFilter: ['data-theme'] })
+    return () => observer.disconnect()
+  }, [])
+
   const setTheme = (t: Theme) => {
     setThemeState(t)
     try {

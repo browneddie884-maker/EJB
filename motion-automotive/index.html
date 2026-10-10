@@ -10,7 +10,7 @@
     <script>
       try {
         var t = localStorage.getItem('motion.theme');
-        if (t !== 'light') document.documentElement.classList.add('dark');
+        var h = document.documentElement.dataset.theme; if (h ? h === 'dark' : t !== 'light') document.documentElement.classList.add('dark');
       } catch (e) {}
     </script>
   </head>

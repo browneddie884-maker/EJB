@@ -29,7 +29,7 @@ export function SiteNav({ brandName = business.name }: { brandName?: string }) {
   const [open, setOpen] = useState(false)
 
   return (
-    <header className="relative z-30">
+    <header className="relative z-30 text-foreground">
       <div className="container-page flex h-[72px] items-center justify-between gap-4">
         <div className="flex items-center gap-8">
           <Link to="/" className="flex flex-shrink-0 items-center gap-2.5 text-lg font-semibold tracking-tight">

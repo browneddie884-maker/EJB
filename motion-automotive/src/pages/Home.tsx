@@ -61,7 +61,7 @@ function CategoryBento({ cars }: { cars: Car[] }) {
         <Reveal key={t.cat} delay={i * 0.05} className={spans[tiles.length]?.[i]}>
           <Link to={`/fleet?type=${t.cat}&view=wheel`} className="group relative block h-full overflow-hidden rounded-3xl">
             <CarImage car={t.cover} className="absolute inset-0 h-full w-full transition-transform duration-700 group-hover:scale-105" />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/45 to-black/5" />
             <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-4 p-5 text-white">
               <div>
                 <h3 className="text-2xl font-semibold tracking-tight">{t.cat}</h3>
@@ -155,7 +155,7 @@ export default function Home() {
   return (
     <>
       {/* The landing is always dark, whatever theme the rest of the site is in. */}
-      <div className="dark relative">
+      <div className="dark relative text-foreground">
         <div className="absolute inset-x-0 top-0 z-30">
           <SiteNav />
         </div>
