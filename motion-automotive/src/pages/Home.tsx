@@ -154,8 +154,8 @@ export default function Home() {
 
   return (
     <>
-      {/* The landing is always dark, whatever theme the rest of the site is in. */}
-      <div className="dark relative text-foreground">
+      {/* The landing follows the site's light/dark switch. */}
+      <div className="relative text-foreground">
         <div className="absolute inset-x-0 top-0 z-30">
           <SiteNav />
         </div>
