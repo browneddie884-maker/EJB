@@ -9,11 +9,10 @@ export const business = {
   email: 'reservations@motionautomotive.com', // TODO: real email
   hours: 'Mon-Sat 8am-7pm, Sun 10am-4pm',
   locations: [
-    // TODO: real pickup locations
-    { id: 'main', name: 'Motion Automotive lot', address: '' }, // TODO: street address (shown on confirmations when filled in),
-    { id: 'delivery', name: 'Delivered to your address', address: 'Within 15 miles of the lot, $35 each way' },
+    { id: 'main', name: 'Motion Automotive lot', address: '' }, // TODO: lot street address (shown when filled in)
+    { id: 'airport', name: 'Baton Rouge airport', address: '9430 Jackie Cochran Dr, Baton Rouge, LA 70807' },
+    { id: 'bluebonnet', name: 'Bluebonnet Blvd', address: '4459B Bluebonnet Blvd, Baton Rouge, LA 70809' },
   ],
-  deliveryFee: 35,
   taxRate: 0.0825,
   minDriverAge: 21,
   youngDriverAge: 25,

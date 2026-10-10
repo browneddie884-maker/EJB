@@ -127,7 +127,7 @@ export default function Book() {
               <DateRangeCalendar from={from} to={to} months={2} booked={bookedRanges(car.id)} onChange={(f, t) => { setFrom(f); setTo(t) }} />
               {(errors.from || errors.to || !free) && <p className="field-error">{errors.from ?? errors.to ?? 'This car is booked for part of those dates.'}</p>}
               <div className="sm:max-w-sm">
-                <Field label="Pickup option">
+                <Field label="Pickup location" hint={business.locations.find((l) => l.id === locationId)?.address || undefined}>
                 <select className="field" value={locationId} onChange={(e) => setLocationId(e.target.value)}>
                   {business.locations.map((l) => <option key={l.id} value={l.id}>{l.name}</option>)}
                   </select>

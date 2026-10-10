@@ -2,7 +2,7 @@ import { useState, type FormEvent } from 'react'
 import { Link } from 'react-router-dom'
 import { Pencil, Plus, Trash2 } from 'lucide-react'
 import { CarImage } from '@/components/car-image'
-import { coveragePlans } from '@/config/business'
+import { business, coveragePlans } from '@/config/business'
 import { categories, type Car, type CarStatus, type ReservationStatus } from '@/data/types'
 import { cn, isoDate, money, prettyDate } from '@/lib/utils'
 import { useStore } from '@/store/store'
@@ -197,13 +197,14 @@ function Bookings() {
         </div>
       ) : (
         <div className="overflow-x-auto rounded-3xl border border-border">
-          <table className="w-full min-w-[860px] text-sm">
+          <table className="w-full min-w-[980px] text-sm">
             <thead className="bg-muted text-left text-muted-foreground">
               <tr>
                 <th className="px-4 py-3 font-medium">Code</th>
                 <th className="px-4 py-3 font-medium">Driver</th>
                 <th className="px-4 py-3 font-medium">Vehicle</th>
                 <th className="px-4 py-3 font-medium">Dates</th>
+                <th className="px-4 py-3 font-medium">Pickup</th>
                 <th className="px-4 py-3 font-medium">Insurance</th>
                 <th className="px-4 py-3 font-medium">Total</th>
                 <th className="px-4 py-3 font-medium">Status</th>
@@ -221,6 +222,7 @@ function Bookings() {
                     </td>
                     <td className="px-4 py-3">{car ? `${car.make} ${car.model}` : 'Removed'}</td>
                     <td className="px-4 py-3 whitespace-nowrap">{prettyDate(r.pickup)} to {prettyDate(r.dropoff)}</td>
+                    <td className="px-4 py-3">{business.locations.find((l) => l.id === r.locationId)?.name ?? 'Not set'}</td>
                     <td className="px-4 py-3">
                       {r.insurance.type === 'own' ? (
                         <><p className="font-medium">Own: {r.insurance.carrier}</p><p className="text-muted-foreground">#{r.insurance.policyNumber}, exp {r.insurance.expires}</p></>

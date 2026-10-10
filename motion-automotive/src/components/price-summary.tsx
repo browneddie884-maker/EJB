@@ -6,7 +6,6 @@ export function PriceSummary({ q, coverageLabel }: { q: Quote; coverageLabel?: s
     [`Car, ${q.days} ${q.days === 1 ? 'day' : 'days'}`, q.base],
     [coverageLabel ?? 'Coverage', q.coverage],
     ['Extras', q.extras],
-    ['Delivery and return', q.delivery],
     ['Young driver fee', q.youngDriver],
     ['Taxes and fees', q.tax],
   ]

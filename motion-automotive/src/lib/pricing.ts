@@ -7,7 +7,6 @@ export type Quote = {
   base: number
   coverage: number
   extras: number
-  delivery: number
   youngDriver: number
   tax: number
   total: number
@@ -32,11 +31,10 @@ export function quote(opts: {
     const e = extraList.find((x) => x.id === id)
     return sum + (e?.perDay ? e.perDay * days : e?.flat ?? 0)
   }, 0)
-  const delivery = opts.locationId === 'delivery' ? business.deliveryFee * 2 : 0
   const youngDriver =
     opts.driverAge && opts.driverAge < business.youngDriverAge ? business.youngDriverFeePerDay * days : 0
-  const subtotal = base + coverage + extras + delivery + youngDriver
+  const subtotal = base + coverage + extras + youngDriver
   const tax = Math.round(subtotal * business.taxRate * 100) / 100
   const deposit = opts.insurance?.type === 'own' ? business.deposit.ownInsurance : business.deposit.motionCoverage
-  return { days, base, coverage, extras, delivery, youngDriver, tax, total: Math.round((subtotal + tax) * 100) / 100, deposit }
+  return { days, base, coverage, extras, youngDriver, tax, total: Math.round((subtotal + tax) * 100) / 100, deposit }
 }

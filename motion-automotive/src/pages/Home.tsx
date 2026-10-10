@@ -125,7 +125,7 @@ function Protection() {
 const steps = [
   { verb: 'Choose', text: 'Pick dates and a car. You see the full price, taxes included, before you pay.' },
   { verb: 'Cover', text: 'Add your own insurance details or one of our three coverage plans.' },
-  { verb: 'Drive', text: 'Show your license at pickup, or have the car delivered to your door.' },
+  { verb: 'Drive', text: 'Show your license and pick up at our lot, the Baton Rouge airport or Bluebonnet Blvd.' },
 ]
 
 /** Router-aware link props for the footer's plain anchors. */
@@ -216,7 +216,7 @@ export default function Home() {
               ['How old do I need to be?', `Drivers must be ${business.minDriverAge} or older with a valid license. Drivers under ${business.youngDriverAge} pay ${money(business.youngDriverFeePerDay)} per day.`],
               ['What if I use my own insurance?', `Enter your carrier, policy number and expiry when you book, and bring your insurance card. We place a ${money(business.deposit.ownInsurance)} refundable hold on your card.`],
               ['Can I cancel?', `Yes. Cancel free up to ${business.freeCancellationHours} hours before pickup from the My booking page.`],
-              ['Do you deliver?', `Yes, within 15 miles of the lot for ${money(business.deliveryFee)} each way. Pick "Delivered to your address" when you search.`],
+              ['Where do I pick up?', business.locations.map((l) => (l.address ? `${l.name}: ${l.address}` : l.name)).join('. ') + '.'],
             ].map(([q, a]) => (
               <details key={q} className="group py-5">
                 <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-lg font-medium">
@@ -234,7 +234,7 @@ export default function Home() {
         <CinematicFooter
           giantText="MOTION"
           heading="Ready to drive?"
-          marquee={['Sedans to sports cars', 'Your insurance or ours', 'Free cancellation up to 48 hours', 'Delivery to your door', 'Clear daily rates']}
+          marquee={['Sedans to sports cars', 'Your insurance or ours', 'Free cancellation up to 48 hours', 'Pickup at the Baton Rouge airport', 'Clear daily rates']}
           primaryLinks={[
             { label: 'Find a car', ...links.fleet },
             { label: 'My booking', ...links.booking },

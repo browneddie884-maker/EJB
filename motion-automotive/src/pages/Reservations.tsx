@@ -105,7 +105,7 @@ export function ReservationDetail() {
               <div className="space-y-2">
                 <h1 className="text-2xl font-semibold tracking-tight">{car.year} {car.make} {car.model}</h1>
                 <p className="flex items-center gap-2 text-muted-foreground"><CalendarCheck className="h-4 w-4" />{prettyDate(r.pickup)} to {prettyDate(r.dropoff)}</p>
-                <p className="text-muted-foreground">{loc?.name}{loc?.address && loc.id !== 'delivery' ? `, ${loc.address}` : ''}</p>
+                <p className="text-muted-foreground">{loc?.name}{loc?.address ? `, ${loc.address}` : ''}</p>
               </div>
             </div>
           )}
