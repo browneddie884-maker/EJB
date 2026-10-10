@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 import { captureSource, initAnalytics, trackPageView } from '@/lib/analytics'
 import { Outlet, useLocation } from 'react-router-dom'
 import { Footer } from './footer'
-import { SiteNav } from './site-nav'
+import { Header } from './ui/header-3'
 
 function Analytics() {
   const { pathname, search } = useLocation()
@@ -35,14 +35,14 @@ function ScrollManager() {
   return null
 }
 
-/** The home page renders its own nav over the landing and its own cinematic footer. */
+/** On the home page the header floats over the landing, and the page brings its own cinematic footer. */
 export function Layout() {
   const { pathname } = useLocation()
   return (
     <div className="flex min-h-[100dvh] flex-col">
       <ScrollManager />
       <Analytics />
-      {pathname !== '/' && <SiteNav />}
+      <Header overlay={pathname === '/'} />
       <main className="flex-1">
         <Outlet />
       </main>

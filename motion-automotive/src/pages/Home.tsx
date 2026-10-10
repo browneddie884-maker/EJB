@@ -3,8 +3,8 @@ import { motion, useReducedMotion } from 'motion/react'
 import { ArrowUpRight, Check, FileText, ShieldCheck } from 'lucide-react'
 import DigitalSerenity from '@/components/ui/digital-serenity-animated-landing-page'
 import { CinematicFooter } from '@/components/ui/motion-footer'
+import { PricingSection, type PricingPlan } from '@/components/ui/pricing'
 import { QuickSearch } from '@/components/quick-search'
-import { SiteNav } from '@/components/site-nav'
 import { SocialLinks } from '@/components/social-links'
 import { landingPages } from '@/config/landing-pages'
 import { businessJsonLd } from '@/lib/seo'
@@ -85,7 +85,7 @@ function CategoryBento({ cars }: { cars: Car[] }) {
 
 function Protection() {
   return (
-    <section id="protection" className="container-page scroll-mt-6 pt-28">
+    <section id="protection" className="container-page scroll-mt-20 pt-28">
       <Reveal>
         <h2 className="max-w-[18ch] text-3xl font-semibold tracking-tighter sm:text-5xl">Your insurance or ours. You choose at checkout.</h2>
       </Reveal>
@@ -131,6 +131,39 @@ const steps = [
   { verb: 'Drive', text: 'Show your license and pick up at our lot, the Baton Rouge airport or Bluebonnet Blvd.' },
 ]
 
+/** Three rate tiers built from the live fleet, so prices follow whatever staff set. */
+function ratePlans(cars: Car[]): PricingPlan[] {
+  const tiers: { name: string; description: string; types: Category[]; href: string; extra: string[]; badge?: string }[] = [
+    { name: 'Everyday', description: 'Sedans, SUVs and electric cars for daily driving and trips.', types: ['Sedan', 'SUV', 'Electric'], href: '/fleet', extra: ['Good on fuel or fully electric'], badge: 'Lowest rates' },
+    { name: 'Trucks', description: 'Pickups for moving, work and weekends off road.', types: ['Truck'], href: '/truck-rental', extra: ['4x4 options'] },
+    { name: 'Luxury & Sports', description: 'Performance and luxury for the occasions that count.', types: ['Luxury', 'Sports'], href: '/luxury-car-rental', extra: ['Porsche, BMW, Audi and AMG'] },
+  ]
+  return tiers.flatMap((t) => {
+    const list = cars.filter((c) => c.status !== 'retired' && t.types.includes(c.category))
+    if (!list.length) return []
+    const from = Math.min(...list.map((c) => c.dailyRate))
+    const models = [...new Set(list.map((c) => `${c.make} ${c.model}`))].slice(0, 3)
+    return [{
+      name: t.name,
+      description: t.description,
+      price: String(from),
+      yearlyPrice: String(Math.round(from * (1 - business.weeklyDiscount))),
+      period: 'day',
+      pricePrefix: 'from',
+      features: [
+        `${models.join(', ')}${list.length > 3 ? ' and more' : ''}`,
+        ...t.extra,
+        `Free cancellation up to ${business.freeCancellationHours} hours before pickup`,
+        'Your insurance or ours',
+      ],
+      buttonText: `See ${t.name === 'Everyday' ? 'everyday cars' : t.name.toLowerCase()}`,
+      href: t.href,
+      isPopular: !!t.badge,
+      badge: t.badge,
+    }]
+  })
+}
+
 /** Router-aware link props for the footer's plain anchors. */
 function useAppLink() {
   const navigate = useNavigate()
@@ -170,9 +203,6 @@ export default function Home() {
       <script type="application/ld+json">{JSON.stringify(businessJsonLd())}</script>
       {/* The landing follows the site's light/dark switch. */}
       <div className="relative text-foreground">
-        <div className="absolute inset-x-0 top-0 z-30">
-          <SiteNav />
-        </div>
         <DigitalSerenity
           topLine={business.name}
           headline="Let us put you in Motion."
@@ -204,6 +234,17 @@ export default function Home() {
         <CategoryBento cars={cars} />
       </section>
 
+      <PricingSection
+        id="pricing"
+        className="mt-16"
+        title="Simple daily rates"
+        description={`Prices are per day before coverage and taxes. Rent ${business.weeklyMinDays} days or more and ${Math.round(business.weeklyDiscount * 100)}% comes off automatically.`}
+        options={['Daily', 'Weekly']}
+        savings={`(Save ${Math.round(business.weeklyDiscount * 100)}%)`}
+        notes={['per day, before coverage and taxes', `per day on rentals of ${business.weeklyMinDays}+ days`]}
+        plans={ratePlans(cars)}
+      />
+
       <Protection />
 
       <section className="container-page pt-28">
@@ -217,7 +258,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="container-page pt-28">
+      <section id="faq" className="container-page scroll-mt-20 pt-28">
         <div className="grid gap-10 lg:grid-cols-[0.8fr_1.2fr]">
           <Reveal>
             <h2 className="text-3xl font-semibold tracking-tighter sm:text-4xl">Before you book</h2>
