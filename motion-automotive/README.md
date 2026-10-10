@@ -16,7 +16,7 @@ npm run build    # static site in dist/
 
 | Route | What it does |
 |---|---|
-| `/` | Video hero with date search, browse by make and type, insurance options, FAQ |
+| `/` | Animated landing with pickup and date search, browse by make and type, insurance options, FAQ |
 | `/fleet` | Inventory with filters (type, make, fuel, seats) and live availability for chosen dates |
 | `/fleet/:id` | Car details, booked dates, reserve button |
 | `/book/:id` | Checkout: trip, insurance (own policy or Essential/Standard/Complete), extras, driver |
