@@ -12,7 +12,7 @@ function prefersStill() {
 
 /**
  * Full-bleed background film for the home landing: a deal in the business district, the keys
- * handed over, the drive in a black SUV, then the airport and a private jet taking off.
+ * handed over, the car up close and on the road, then a private jet taking off.
  * Muted and looping; it pauses when scrolled out of view, and visitors who
  * prefer reduced motion or save data see the still poster instead.
  * Footage: Mixkit (free license, no attribution required). Swap in the client's own film
