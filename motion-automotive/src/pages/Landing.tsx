@@ -59,7 +59,7 @@ export default function Landing({ page }: { page: LandingPage }) {
         <div className="divide-y divide-border border-y border-border">
           {page.faqs.map(([q, a]) => (
             <details key={q} className="group py-5">
-              <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-lg font-medium">
+              <summary className="-my-2 flex cursor-pointer list-none items-center justify-between gap-4 py-2 text-lg font-medium">
                 {q}
                 <span className="text-2xl leading-none text-muted-foreground transition-transform group-open:rotate-45">+</span>
               </summary>

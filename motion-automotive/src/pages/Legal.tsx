@@ -72,7 +72,7 @@ export function PrivacyPolicy() {
           Meta load only after you accept them in the cookie banner. You can change your choice at any time.
         </p>
         <p>
-          <button type="button" onClick={openCookieSettings} className="font-medium text-foreground underline underline-offset-4">
+          <button type="button" onClick={openCookieSettings} className="-my-3 py-3 font-medium text-foreground underline underline-offset-4">
             Open cookie settings
           </button>
         </p>

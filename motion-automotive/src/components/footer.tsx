@@ -15,23 +15,23 @@ export function Footer() {
             Local car rental with clear prices. Bring your own insurance or pick one of ours at checkout.
           </p>
         </div>
-        <div className="space-y-2 text-sm">
-          <p className="font-medium">Contact</p>
-          <a className="block text-muted-foreground hover:text-foreground" href={`tel:${business.phone.replace(/[^\d+]/g, '')}`}>{business.phone}</a>
-          <a className="block text-muted-foreground hover:text-foreground" href={`mailto:${business.email}`}>{business.email}</a>
-          <p className="text-muted-foreground">{business.hours}</p>
+        <div className="text-sm md:space-y-2">
+          <p className="pb-1 font-medium md:pb-0">Contact</p>
+          <a className="block py-3 text-muted-foreground hover:text-foreground md:py-0" href={`tel:${business.phone.replace(/[^\d+]/g, '')}`}>{business.phone}</a>
+          <a className="block py-3 text-muted-foreground hover:text-foreground md:py-0" href={`mailto:${business.email}`}>{business.email}</a>
+          <p className="py-3 text-muted-foreground md:py-0">{business.hours}</p>
           <SocialLinks className="pt-2" />
         </div>
-        <div className="space-y-2 text-sm">
-          <p className="font-medium">Rent</p>
-          <Link className="block text-muted-foreground hover:text-foreground" to="/fleet">Fleet</Link>
-          <Link className="block text-muted-foreground hover:text-foreground" to="/reservations">My booking</Link>
-          <Link className="block text-muted-foreground hover:text-foreground" to="/staff">Staff login</Link>
+        <div className="text-sm md:space-y-2">
+          <p className="pb-1 font-medium md:pb-0">Rent</p>
+          <Link className="block py-3 text-muted-foreground hover:text-foreground md:py-0" to="/fleet">Fleet</Link>
+          <Link className="block py-3 text-muted-foreground hover:text-foreground md:py-0" to="/reservations">My booking</Link>
+          <Link className="block py-3 text-muted-foreground hover:text-foreground md:py-0" to="/staff">Staff login</Link>
         </div>
-        <div className="space-y-2 text-sm">
-          <p className="font-medium">Rentals</p>
+        <div className="text-sm md:space-y-2">
+          <p className="pb-1 font-medium md:pb-0">Rentals</p>
           {landingPages.map((p) => (
-            <Link key={p.slug} className="block text-muted-foreground hover:text-foreground" to={`/${p.slug}`}>{p.linkLabel}</Link>
+            <Link key={p.slug} className="block py-3 text-muted-foreground hover:text-foreground md:py-0" to={`/${p.slug}`}>{p.linkLabel}</Link>
           ))}
         </div>
       </div>

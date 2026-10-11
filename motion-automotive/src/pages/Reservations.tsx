@@ -49,7 +49,7 @@ export function ReservationLookup() {
       <form onSubmit={submit} noValidate className="grid gap-4 rounded-3xl border border-border bg-card p-6 sm:p-8">
         <label className="grid gap-1.5">
           <span className="field-label">Booking code</span>
-          <input className="field uppercase" placeholder="MA-XXXXXX" value={code} onChange={(e) => setCode(e.target.value)} required />
+          <input className="field uppercase" autoCapitalize="characters" autoComplete="off" placeholder="MA-XXXXXX" value={code} onChange={(e) => setCode(e.target.value)} required />
         </label>
         <label className="grid gap-1.5">
           <span className="field-label">Driver last name</span>

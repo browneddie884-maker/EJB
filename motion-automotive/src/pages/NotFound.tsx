@@ -28,7 +28,7 @@ export default function NotFound() {
           </Link>
         ))}
       </div>
-      <a href={`tel:${business.phone.replace(/[^\d+]/g, '')}`} className="mt-8 inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground">
+      <a href={`tel:${business.phone.replace(/[^\d+]/g, '')}`} className="mt-6 inline-flex items-center gap-2 py-3 text-sm text-muted-foreground hover:text-foreground">
         <Phone className="h-4 w-4" /> Or call us at {business.phone}
       </a>
     </section>

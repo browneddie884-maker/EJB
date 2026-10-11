@@ -106,19 +106,19 @@ export default function Fleet() {
             {from && to ? `Showing availability for ${prettyDate(from)} to ${prettyDate(to)}.` : 'Add your dates to see what is free.'}
           </p>
         </div>
-        <div className="grid grid-cols-2 gap-3 sm:flex sm:items-end">
-          <label className="grid gap-1.5">
+        <div className="grid grid-cols-1 gap-3 min-[360px]:grid-cols-2 sm:flex sm:items-end">
+          <label className="grid min-w-0 gap-1.5">
             <span className="field-label">From</span>
-            <input type="date" className="field" min={today} value={from} onChange={(e) => {
+            <input type="date" className="field min-w-0" min={today} value={from} onChange={(e) => {
               const next = new URLSearchParams(params)
               next.set('from', e.target.value)
               if (!to || to <= e.target.value) next.set('to', addDays(e.target.value, 3))
               setParams(next, { replace: true })
             }} />
           </label>
-          <label className="grid gap-1.5">
+          <label className="grid min-w-0 gap-1.5">
             <span className="field-label">Until</span>
-            <input type="date" className="field" min={from ? addDays(from, 1) : today} value={to} onChange={(e) => set('to', e.target.value)} />
+            <input type="date" className="field min-w-0" min={from ? addDays(from, 1) : today} value={to} onChange={(e) => set('to', e.target.value)} />
           </label>
         </div>
       </div>
@@ -128,7 +128,7 @@ export default function Fleet() {
           <button
             key={c || 'all'}
             onClick={() => set('type', c)}
-            className={cn('btn px-4 py-2', type === c ? 'bg-foreground text-background' : 'border border-border hover:bg-muted')}
+            className={cn('btn px-4 py-2.5 sm:py-2', type === c ? 'bg-foreground text-background' : 'border border-border hover:bg-muted')}
             aria-pressed={type === c}
           >
             {c || 'All types'}
@@ -176,7 +176,7 @@ export default function Fleet() {
           <span>{results.length} {results.length === 1 ? 'car' : 'cars'}</span>
           <div className="flex rounded-full border border-border p-0.5" role="group" aria-label="View">
             {(['wheel', 'grid'] as const).map((v) => (
-              <button key={v} onClick={() => set('view', v)} aria-pressed={view === v} className={cn('flex items-center gap-1.5 rounded-full px-3 py-1 text-sm capitalize transition-colors', view === v ? 'bg-foreground text-background' : 'hover:text-foreground')}>
+              <button key={v} onClick={() => set('view', v)} aria-pressed={view === v} className={cn('flex items-center gap-1.5 rounded-full px-4 py-2.5 text-sm capitalize transition-colors sm:px-3 sm:py-1', view === v ? 'bg-foreground text-background' : 'hover:text-foreground')}>
                 {v === 'grid' && <LayoutGrid className="h-3.5 w-3.5" />}
                 {v}
               </button>

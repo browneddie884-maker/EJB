@@ -5,6 +5,7 @@ import { ArrowLeft, Check, Wrench } from 'lucide-react'
 import { CarImage } from '@/components/car-image'
 import { CarSpecs } from '@/components/car-card'
 import { DateRangeCalendar } from '@/components/date-range-calendar'
+import { MobileActionBar } from '@/components/mobile-action-bar'
 import { useStore } from '@/store/store'
 import { business } from '@/config/business'
 import { useSeo } from '@/lib/seo'
@@ -47,7 +48,7 @@ export default function CarDetail() {
 
   return (
     <div className="container-page pt-4">
-      <Link to="/fleet" className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground">
+      <Link to="/fleet" className="-my-3 inline-flex items-center gap-1.5 py-3 text-sm text-muted-foreground hover:text-foreground">
         <ArrowLeft className="h-4 w-4" /> All cars
       </Link>
 
@@ -56,7 +57,7 @@ export default function CarDetail() {
           <CarImage car={car} eager className="aspect-[4/3] w-full lg:aspect-[5/4]" />
         </div>
 
-        <div className="flex flex-col">
+        <div className="flex min-w-0 flex-col">
           <p className="text-muted-foreground">{car.year} {car.make}</p>
           <h1 className="text-4xl font-semibold tracking-tighter sm:text-5xl">{car.model}</h1>
           <CarSpecs car={car} className="mt-4" />
@@ -68,7 +69,7 @@ export default function CarDetail() {
             ))}
           </ul>
 
-          <div className="mt-8 rounded-3xl border border-border bg-card p-5">
+          <div id="reserve" className="mt-8 scroll-mt-20 rounded-3xl border border-border bg-card p-5">
             <p className="text-3xl font-semibold">{money(car.dailyRate)}<span className="text-base font-normal text-muted-foreground"> / day</span></p>
             {car.status === 'maintenance' ? (
               <p className="mt-4 flex items-center gap-2 text-sm text-muted-foreground"><Wrench className="h-4 w-4" /> In service right now. Check back soon.</p>
@@ -100,6 +101,19 @@ export default function CarDetail() {
           )}
         </div>
       </div>
+      {car.status !== 'maintenance' && (
+        <MobileActionBar watchId="reserve">
+          <div className="min-w-0">
+            <p className="font-semibold">{money(car.dailyRate)}<span className="text-sm font-normal text-muted-foreground"> / day</span></p>
+            <p className="truncate text-sm text-muted-foreground">{prettyDate(from)} to {prettyDate(to)}</p>
+          </div>
+          {free ? (
+            <Link to={`/book/${car.id}?from=${from}&to=${to}${loc ? `&loc=${loc}` : ''}`} className="btn-signal shrink-0 px-6 py-3">Reserve</Link>
+          ) : (
+            <a href="#reserve" className="btn-signal shrink-0 px-6 py-3">Change dates</a>
+          )}
+        </MobileActionBar>
+      )}
     </div>
   )
 }

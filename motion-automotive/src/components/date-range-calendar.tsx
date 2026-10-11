@@ -74,7 +74,7 @@ export function DateRangeCalendar({
         classNames={{ disabled: 'text-muted-foreground opacity-75' }}
         modifiers={{ booked: bookedNights }}
         modifiersClassNames={{ booked: 'line-through decoration-danger decoration-2' }}
-        className="mx-auto rounded-2xl border border-border bg-card p-3 shadow-sm [--cell-size:--spacing(9)] sm:[--cell-size:--spacing(10)]"
+        className="mx-auto rounded-2xl border border-border bg-card p-3 shadow-sm [--cell-size:min(2.75rem,calc((100vw-7.5rem)/7))] sm:[--cell-size:--spacing(10)]"
       />
       <p className="text-center text-sm text-muted-foreground" aria-live="polite">
         {complete

@@ -130,7 +130,39 @@ function Inventory() {
         <button className="btn-signal" onClick={() => setEditing(emptyCar)}><Plus className="h-4 w-4" /> Add vehicle</button>
       </div>
       {editing && <CarForm key={editing.id || 'new'} initial={editing} onCancel={() => setEditing(null)} onSave={(c) => { upsertCar(c); setEditing(null) }} />}
-      <div className="overflow-x-auto rounded-3xl border border-border">
+      <ul className="space-y-3 md:hidden">
+        {cars.map((c) => {
+          const next = nextBooking(c.id)
+          return (
+            <li key={c.id} className={cn('rounded-3xl border border-border bg-card p-4 text-sm', c.status === 'retired' && 'opacity-55')}>
+              <div className="flex items-center gap-3">
+                <CarImage car={c} className="h-12 w-16 shrink-0 rounded-lg" />
+                <div className="min-w-0 flex-1">
+                  <p className="font-medium">{c.year} {c.make} {c.model}</p>
+                  <p className="text-muted-foreground">{money(c.dailyRate)}/day, {c.plate || 'no plate'}</p>
+                </div>
+              </div>
+              <p className="mt-3 text-muted-foreground">
+                Next booking: {outNow(c.id) ? <span className="font-medium text-foreground">Out now</span> : next ? prettyDate(next.pickup) : 'None'}
+              </p>
+              <div className="mt-3 flex items-center gap-2">
+                <select className="field flex-1" value={c.status} onChange={(e) => upsertCar({ ...c, status: e.target.value as CarStatus })} aria-label={`Status of ${c.make} ${c.model}`}>
+                  <option value="available">Available</option>
+                  <option value="maintenance">In service</option>
+                  <option value="retired">Hidden</option>
+                </select>
+                <button className="rounded-full p-3.5 hover:bg-muted" aria-label={`Edit ${c.model}`} onClick={() => setEditing(c)}><Pencil className="h-4 w-4" /></button>
+                {armed === c.id ? (
+                  <button className="btn bg-danger px-4 py-3 text-background" onClick={() => { removeCar(c.id); setArmed(null) }} onBlur={() => setArmed(null)} autoFocus>Delete</button>
+                ) : (
+                  <button className="rounded-full p-3.5 text-danger hover:bg-muted" aria-label={`Delete ${c.model}`} onClick={() => setArmed(c.id)}><Trash2 className="h-4 w-4" /></button>
+                )}
+              </div>
+            </li>
+          )
+        })}
+      </ul>
+      <div className="hidden overflow-x-auto rounded-3xl border border-border md:block">
         <table className="w-full min-w-[760px] text-sm">
           <thead className="bg-muted text-left text-muted-foreground">
             <tr>
@@ -209,7 +241,44 @@ function Bookings() {
           <Link to="/fleet" className="btn-ghost mt-6">Open the fleet</Link>
         </div>
       ) : (
-        <div className="overflow-x-auto rounded-3xl border border-border">
+        <>
+        {/* Phones: one card per booking instead of a wide table. */}
+        <ul className="space-y-3 md:hidden">
+          {list.map((r) => {
+            const car = getCar(r.carId)
+            return (
+              <li key={r.code} className="rounded-3xl border border-border bg-card p-4 text-sm">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0">
+                    <p className="font-medium">{r.driver.firstName} {r.driver.lastName}</p>
+                    <a href={`tel:${r.driver.phone.replace(/[^\d+]/g, '')}`} className="-my-2 inline-block py-2 text-muted-foreground underline underline-offset-4">{r.driver.phone}</a>
+                  </div>
+                  <Link className="-my-2 shrink-0 py-2 font-mono underline underline-offset-4" to={`/reservations/${r.code}`}>{r.code}</Link>
+                </div>
+                <dl className="mt-3 grid grid-cols-[auto_1fr] gap-x-4 gap-y-1.5">
+                  <dt className="text-muted-foreground">Vehicle</dt><dd>{car ? `${car.make} ${car.model}` : 'Removed'}</dd>
+                  <dt className="text-muted-foreground">Dates</dt><dd>{prettyDate(r.pickup)} to {prettyDate(r.dropoff)}</dd>
+                  <dt className="text-muted-foreground">Pickup</dt><dd>{business.locations.find((l) => l.id === r.locationId)?.name ?? 'Not set'}</dd>
+                  <dt className="text-muted-foreground">Insurance</dt>
+                  <dd>
+                    {r.insurance.type === 'own'
+                      ? `Own: ${r.insurance.carrier}, #${r.insurance.policyNumber}, exp ${r.insurance.expires}`
+                      : `Motion ${coveragePlans.find((p) => r.insurance.type === 'motion' && p.id === r.insurance.plan)?.name ?? ''}`}
+                  </dd>
+                  <dt className="text-muted-foreground">Came from</dt><dd>{describeSource(r.source)}</dd>
+                  <dt className="text-muted-foreground">Total</dt><dd className="font-medium">{money(r.total)}</dd>
+                </dl>
+                <select className="field mt-3" value={r.status} onChange={(e) => setReservationStatus(r.code, e.target.value as ReservationStatus)} aria-label={`Status of ${r.code}`}>
+                  <option value="confirmed">Confirmed</option>
+                  <option value="picked-up">Picked up</option>
+                  <option value="returned">Returned</option>
+                  <option value="cancelled">Cancelled</option>
+                </select>
+              </li>
+            )
+          })}
+        </ul>
+        <div className="hidden overflow-x-auto rounded-3xl border border-border md:block">
           <table className="w-full min-w-[1100px] text-sm">
             <thead className="bg-muted text-left text-muted-foreground">
               <tr>
@@ -260,6 +329,7 @@ function Bookings() {
             </tbody>
           </table>
         </div>
+        </>
       )}
     </div>
   )
@@ -322,7 +392,7 @@ export default function Staff() {
     <div className="container-page pt-6">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <h1 className="text-4xl font-semibold tracking-tighter">Dashboard</h1>
-        <button className="text-sm text-muted-foreground underline underline-offset-4 hover:text-foreground" onClick={() => { if (resetArmed) { resetDemo(); setResetArmed(false) } else setResetArmed(true) }} onBlur={() => setResetArmed(false)}>
+        <button className="-my-3 py-3 text-sm text-muted-foreground underline underline-offset-4 hover:text-foreground" onClick={() => { if (resetArmed) { resetDemo(); setResetArmed(false) } else setResetArmed(true) }} onBlur={() => setResetArmed(false)}>
           {resetArmed ? 'Click again to erase all bookings' : 'Reset demo data'}
         </button>
       </div>
@@ -336,7 +406,7 @@ export default function Staff() {
       </dl>
       <div className="mt-10 flex gap-6 border-b border-border">
         {(['bookings', 'inventory'] as const).map((t) => (
-          <button key={t} onClick={() => setTab(t)} className={cn('-mb-px border-b-2 pb-3 text-sm font-medium capitalize transition-colors', tab === t ? 'border-signal text-foreground' : 'border-transparent text-muted-foreground hover:text-foreground')}>
+          <button key={t} onClick={() => setTab(t)} className={cn('-mb-px border-b-2 pt-2 pb-3 text-sm font-medium capitalize transition-colors', tab === t ? 'border-signal text-foreground' : 'border-transparent text-muted-foreground hover:text-foreground')}>
             {t}
           </button>
         ))}

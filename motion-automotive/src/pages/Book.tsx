@@ -4,6 +4,7 @@ import { ArrowLeft, Check, FileText, ShieldCheck } from 'lucide-react'
 import { CarImage } from '@/components/car-image'
 import { DateRangeCalendar } from '@/components/date-range-calendar'
 import { PriceSummary } from '@/components/price-summary'
+import { MobileActionBar } from '@/components/mobile-action-bar'
 import { business, coveragePlans, extras, type CoveragePlanId } from '@/config/business'
 import type { Driver, Insurance } from '@/data/types'
 import { quote } from '@/lib/pricing'
@@ -146,7 +147,7 @@ export default function Book() {
 
   return (
     <div className="container-page pt-4">
-      <Link to={`/fleet/${car.id}?from=${from}&to=${to}`} className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground">
+      <Link to={`/fleet/${car.id}?from=${from}&to=${to}`} className="-my-3 inline-flex items-center gap-1.5 py-3 text-sm text-muted-foreground hover:text-foreground">
         <ArrowLeft className="h-4 w-4" /> Back to car
       </Link>
       <h1 className="mt-4 text-4xl font-semibold tracking-tighter sm:text-5xl">Reserve your {car.make} {car.model}</h1>
@@ -224,7 +225,7 @@ export default function Book() {
                   <input type="date" className="field" min={today} value={own.expires} aria-invalid={!!errors.expires} onChange={(e) => setOwn({ ...own, expires: e.target.value })} />
                 </Field>
                 <label className="flex gap-3 text-sm sm:col-span-3">
-                  <input type="checkbox" className="mt-0.5 h-4 w-4 accent-[var(--signal)]" checked={ownConfirmed} onChange={(e) => setOwnConfirmed(e.target.checked)} />
+                  <input type="checkbox" className="mt-0.5 h-5 w-5 shrink-0 accent-[var(--signal)] sm:h-4 sm:w-4" checked={ownConfirmed} onChange={(e) => setOwnConfirmed(e.target.checked)} />
                   <span>
                     My policy includes collision and liability coverage that extends to rental cars, and I will bring my insurance card to pickup.
                     {errors.ownConfirmed && <span className="field-error mt-1 block">{errors.ownConfirmed}</span>}
@@ -259,18 +260,18 @@ export default function Book() {
               <Field label="Last name" error={errors.lastName}><input className="field" autoComplete="family-name" {...d('lastName')} /></Field>
               <Field label="Email" error={errors.email}><input type="email" className="field" autoComplete="email" {...d('email')} /></Field>
               <Field label="Phone" error={errors.phone}><input type="tel" className="field" autoComplete="tel" {...d('phone')} /></Field>
-              <Field label="Driver's license number" error={errors.licenseNumber}><input className="field" autoComplete="off" {...d('licenseNumber')} /></Field>
+              <Field label="Driver's license number" error={errors.licenseNumber}><input className="field" autoComplete="off" autoCapitalize="characters" {...d('licenseNumber')} /></Field>
               <div className="grid grid-cols-2 gap-4">
                 <Field label="License state" error={errors.licenseState}><input className="field uppercase" maxLength={2} placeholder="LA" autoComplete="address-level1" {...d('licenseState')} /></Field>
                 <Field label="Driver age" error={errors.age} hint={driver.age < business.youngDriverAge ? `Under ${business.youngDriverAge}: ${money(business.youngDriverFeePerDay)}/day fee` : undefined}>
-                  <input type="number" className="field" min={16} max={99} {...d('age')} />
+                  <input type="number" inputMode="numeric" className="field" min={16} max={99} {...d('age')} />
                 </Field>
               </div>
             </div>
           </Step>
         </div>
 
-        <aside className="lg:sticky lg:top-6 lg:self-start">
+        <aside id="summary" className="scroll-mt-20 lg:sticky lg:top-6 lg:self-start">
           <div className="rounded-3xl border border-border bg-card p-5">
             <div className="flex gap-4">
               <CarImage car={car} className="h-16 w-24 shrink-0 rounded-xl" />
@@ -283,7 +284,7 @@ export default function Book() {
               {q && <PriceSummary q={q} coverageLabel={insuranceType === 'motion' ? `${planName} coverage` : 'Coverage'} />}
             </div>
             <label className="mt-5 flex gap-3 text-sm">
-              <input type="checkbox" className="mt-0.5 h-4 w-4 accent-[var(--signal)]" checked={agree} onChange={(e) => setAgree(e.target.checked)} />
+              <input type="checkbox" className="mt-0.5 h-5 w-5 shrink-0 accent-[var(--signal)] sm:h-4 sm:w-4" checked={agree} onChange={(e) => setAgree(e.target.checked)} />
               <span>
                 I agree to the{' '}
                 <Link to="/terms" target="_blank" className="font-medium underline underline-offset-4">rental terms</Link>
@@ -298,6 +299,15 @@ export default function Book() {
           </div>
         </aside>
       </form>
+      {q && (
+        <MobileActionBar watchId="summary">
+          <div className="min-w-0">
+            <p className="text-sm text-muted-foreground">Total, {q.days} {q.days === 1 ? 'day' : 'days'}</p>
+            <p className="text-lg font-semibold">{money(q.total)}</p>
+          </div>
+          <a href="#summary" className="btn-signal shrink-0 px-6 py-3">Review and book</a>
+        </MobileActionBar>
+      )}
     </div>
   )
 }

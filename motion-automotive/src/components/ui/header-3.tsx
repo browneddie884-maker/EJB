@@ -158,7 +158,7 @@ export function Header({ overlay = false }: { overlay?: boolean }) {
 						size="icon"
 						variant="outline"
 						onClick={() => setOpen(!open)}
-						className="rounded-full md:hidden"
+						className="size-11 rounded-full md:hidden"
 						aria-expanded={open}
 						aria-controls="mobile-menu"
 						aria-label="Toggle menu"
