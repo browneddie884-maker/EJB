@@ -5,6 +5,7 @@ import { ArrowUpRight, Check, FileText, ShieldCheck } from 'lucide-react'
 import DigitalSerenity from '@/components/ui/digital-serenity-animated-landing-page'
 import { PricingSection, type PricingPlan } from '@/components/ui/pricing'
 import { QuickSearch } from '@/components/quick-search'
+import { HeroVideo } from '@/components/hero-video'
 import { LegalLinks } from '@/components/legal-links'
 import { Logo } from '@/components/logo'
 import { SocialLinks } from '@/components/social-links'
@@ -211,9 +212,10 @@ export default function Home() {
   return (
     <>
       <script type="application/ld+json">{JSON.stringify(businessJsonLd())}</script>
-      {/* The landing follows the site's light/dark switch. */}
-      <div className="relative text-foreground">
+      {/* The video hero stays dark in both themes so the text over the footage is readable. */}
+      <div className="dark relative text-foreground [color-scheme:dark]">
         <DigitalSerenity
+          background={<HeroVideo />}
           top={<Logo eager className="mx-auto h-auto w-[min(78vw,30rem)]" />}
           headline="Let us put you in Motion."
           subline="Sedans to sports cars, booked in minutes. Bring your own insurance or use ours."

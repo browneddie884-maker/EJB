@@ -3,7 +3,7 @@
  * Adapted from 21st.dev "Header 3" (efferd/header-3).
  * Motion Automotive changes: rental menus and app routes (react-router links), the site's
  * brand mark and theme toggle, page-width container, a passive scroll listener, and an
- * `overlay` mode so the home landing can sit underneath the bar.
+ * `overlay` mode so the home landing can sit underneath the bar (light text over the hero video).
  */
 import React from 'react';
 import { Link } from 'react-router-dom';
@@ -78,7 +78,7 @@ export function Header({ overlay = false }: { overlay?: boolean }) {
 
 	return (
 		<header
-			className={cn('sticky top-0 z-50 w-full border-b border-transparent text-foreground', overlay && '-mb-16', {
+			className={cn('sticky top-0 z-50 w-full border-b border-transparent text-foreground', overlay && '-mb-16', overlay && !scrolled && !open && 'dark', {
 				'bg-background/95 supports-[backdrop-filter]:bg-background/85 border-border backdrop-blur-lg': scrolled || open,
 			})}
 		>

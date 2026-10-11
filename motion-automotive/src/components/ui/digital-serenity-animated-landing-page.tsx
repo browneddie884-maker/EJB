@@ -19,6 +19,8 @@ interface DigitalSerenityProps {
   subline?: string
   bottomLine?: string
   children?: ReactNode
+  /** Full-bleed layer behind the grid and copy, e.g. a background video. */
+  background?: ReactNode
 }
 
 type Ripple = { id: number; x: number; y: number }
@@ -79,6 +81,7 @@ const DigitalSerenity = ({
   subline = 'where peace resides and clarity awakens within the soul.',
   bottomLine = 'Observe, accept, let go.',
   children,
+  background,
 }: DigitalSerenityProps) => {
   const rootRef = useRef<HTMLElement>(null)
   const [mouse, setMouse] = useState({ left: '0px', top: '0px', opacity: 0 })
@@ -137,6 +140,7 @@ const DigitalSerenity = ({
   return (
     <section ref={rootRef} className="ds-root relative min-h-[100dvh] overflow-hidden">
       <style>{pageStyles}</style>
+      {background}
 
       <svg className="pointer-events-none absolute inset-0 h-full w-full" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
         <defs>
