@@ -12,10 +12,11 @@ function prefersStill() {
 
 /**
  * Full-bleed background film for the home landing: a deal in the business district, the keys
- * handed over, the car up close and on the road, then a private jet taking off.
+ * handed over, the car up close and on the road, the private jet, then landing to a car already
+ * waiting at arrival.
  * Muted and looping; it pauses when scrolled out of view, and visitors who
  * prefer reduced motion or save data see the still poster instead.
- * Footage: Mixkit (free license, no attribution required). Swap in the client's own film
+ * Footage: Mixkit and Coverr (free licenses, no attribution required). Swap in the client's own film
  * by replacing the files in src/assets/hero/ (WebM for Chrome and Firefox, MP4 for Safari).
  */
 export function HeroVideo() {
