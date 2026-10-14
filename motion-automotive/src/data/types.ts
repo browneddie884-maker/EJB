@@ -16,6 +16,10 @@ export type Car = {
   transmission: 'Automatic' | 'Manual'
   fuel: 'Gas' | 'Hybrid' | 'Electric'
   dailyRate: number
+  /** Refundable hold placed on the renter's card for this car. */
+  deposit: number
+  /** Miles included per rental day; null means unlimited. */
+  milesPerDay: number | null
   image: string
   color: string
   plate: string

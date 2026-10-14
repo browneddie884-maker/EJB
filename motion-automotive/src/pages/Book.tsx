@@ -178,8 +178,8 @@ export default function Book() {
           <Step n={2} title="Insurance">
             <div className="grid gap-3 sm:grid-cols-2" role="radiogroup" aria-label="Insurance choice">
               {([
-                ['motion', ShieldCheck, 'Motion coverage', `From ${money(coveragePlans[0].perDay)}/day, ${money(business.deposit.motionCoverage)} hold`],
-                ['own', FileText, 'My own insurance', `No coverage charge, ${money(business.deposit.ownInsurance)} hold`],
+                ['motion', ShieldCheck, 'Motion coverage', `From ${money(coveragePlans[0].perDay)}/day, nothing to claim on your policy`],
+                ['own', FileText, 'My own insurance', 'No coverage charge, bring your insurance card'],
               ] as const).map(([value, Icon, title, sub]) => (
                 <button
                   type="button" key={value} role="radio" aria-checked={insuranceType === value}

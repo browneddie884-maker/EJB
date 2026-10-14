@@ -3,7 +3,7 @@ import { Link, useParams, useSearchParams } from 'react-router-dom'
 import { trackViewCar } from '@/lib/analytics'
 import { ArrowLeft, Check, Wrench } from 'lucide-react'
 import { CarImage } from '@/components/car-image'
-import { CarSpecs } from '@/components/car-card'
+import { CarSpecs, milesLabel } from '@/components/car-card'
 import { DateRangeCalendar } from '@/components/date-range-calendar'
 import { MobileActionBar } from '@/components/mobile-action-bar'
 import { useStore } from '@/store/store'
@@ -71,6 +71,9 @@ export default function CarDetail() {
 
           <div id="reserve" className="mt-8 scroll-mt-20 rounded-3xl border border-border bg-card p-5">
             <p className="text-3xl font-semibold">{money(car.dailyRate)}<span className="text-base font-normal text-muted-foreground"> / day</span></p>
+            <p className="mt-1 text-sm text-muted-foreground">
+              {milesLabel(car)}{car.milesPerDay != null && `, then ${money(business.extraMileFee)} a mile`} &middot; {money(car.deposit)} refundable deposit
+            </p>
             {car.status === 'maintenance' ? (
               <p className="mt-4 flex items-center gap-2 text-sm text-muted-foreground"><Wrench className="h-4 w-4" /> In service right now. Check back soon.</p>
             ) : (

@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
 import { Link } from 'react-router-dom'
-import { business, coveragePlans } from '@/config/business'
+import { business, coveragePlans, extras } from '@/config/business'
 import { useSeo } from '@/lib/seo'
 import { money } from '@/lib/utils'
 import { openCookieSettings } from '@/components/cookie-consent'
@@ -118,9 +118,9 @@ export function Terms() {
       <section>
         <h2>Who can rent</h2>
         <ul>
-          <li>Drivers must be {business.minDriverAge} or older and hold a valid driver's license.</li>
+          <li>Drivers must be {business.minDriverAge} or older and hold a valid driver's license. Out-of-state licenses are welcome.</li>
           <li>Drivers under {business.youngDriverAge} pay a young driver fee of {money(business.youngDriverFeePerDay)} per day.</li>
-          <li>Every driver must be named on the rental. Additional drivers are added as an extra.</li>
+          <li>Every driver must be named on the rental. A licensed second driver can be added for {money(extras.find((e) => e.id === 'driver')?.flat ?? 0)}.</li>
         </ul>
       </section>
       <section>
@@ -129,14 +129,15 @@ export function Terms() {
           <li>Prices shown are per day for the car, plus any coverage, extras and taxes listed at checkout.</li>
           <li>Rentals of {business.weeklyMinDays} days or more receive the weekly discount shown at checkout.</li>
           <li>No payment is taken online. You pay at pickup.</li>
+          <li>Each car lists its included miles. Cars with a daily allowance are charged {money(business.extraMileFee)} for each mile over it; cars marked unlimited are not.</li>
           <li>We may need to substitute a similar vehicle if the reserved one is unavailable.</li>
         </ul>
       </section>
       <section>
         <h2>Deposit</h2>
         <p>
-          A refundable hold is placed on your card at pickup: {money(business.deposit.motionCoverage)} with Motion coverage, or {money(business.deposit.ownInsurance)} if you use your own insurance. It
-          is released after the car is returned and checked.
+          A refundable hold is placed on your card for the deposit shown on the car, starting at {money(business.minDeposit)}. It is released after the car is returned and
+          checked.
         </p>
       </section>
       <section>

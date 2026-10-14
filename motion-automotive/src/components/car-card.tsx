@@ -1,10 +1,15 @@
 import { Link } from 'react-router-dom'
 import { motion, useReducedMotion } from 'motion/react'
-import { Briefcase, Fuel, Users, Zap } from 'lucide-react'
+import { Briefcase, Fuel, Users, Zap, Gauge } from 'lucide-react'
 import type { Car } from '@/data/types'
 import { business } from '@/config/business'
 import { cn, money } from '@/lib/utils'
 import { CarImage } from './car-image'
+
+/** "Unlimited miles" or "200 mi/day". */
+export function milesLabel(car: Car) {
+  return car.milesPerDay == null ? 'Unlimited miles' : `${car.milesPerDay} mi/day`
+}
 
 export function CarSpecs({ car, className }: { car: Car; className?: string }) {
   const FuelIcon = car.fuel === 'Electric' ? Zap : Fuel
@@ -13,6 +18,7 @@ export function CarSpecs({ car, className }: { car: Car; className?: string }) {
       <li className="flex items-center gap-1.5"><Users className="h-4 w-4" strokeWidth={1.75} />{car.seats} seats</li>
       <li className="flex items-center gap-1.5"><Briefcase className="h-4 w-4" strokeWidth={1.75} />{car.bags} bags</li>
       <li className="flex items-center gap-1.5"><FuelIcon className="h-4 w-4" strokeWidth={1.75} />{car.fuel}</li>
+      <li className="flex items-center gap-1.5"><Gauge className="h-4 w-4" strokeWidth={1.75} />{milesLabel(car)}</li>
     </ul>
   )
 }

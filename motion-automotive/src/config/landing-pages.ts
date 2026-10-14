@@ -56,7 +56,7 @@ export const landingPages: LandingPage[] = [
     points: [`Book ${business.weeklyMinDays} days or more and save ${pct}%`, `Pick up at ${pickupList}`, 'Use your own insurance or add Motion coverage'],
     faqs: [
       ['Can I tow with a rental truck?', `Ask us before you book at ${business.phone} so we can confirm the right truck and equipment for your load.`],
-      ['Is there a mileage limit?', `Call us at ${business.phone} for mileage terms on longer trips.`],
+      ['Is there a mileage limit?', 'Each truck lists its included miles per day on its page. Extra miles are charged per mile.'],
       ['How old do I need to be?', `${business.minDriverAge} or older. Drivers under ${business.youngDriverAge} pay a young driver fee.`],
     ],
     linkLabel: 'Truck rentals',
@@ -71,7 +71,7 @@ export const landingPages: LandingPage[] = [
     carsHeading: 'Luxury and sports cars',
     points: ['Porsche, BMW, Audi, Mercedes-AMG and more', `Free cancellation up to ${business.freeCancellationHours} hours before pickup`, 'Use your own insurance or add Motion coverage'],
     faqs: [
-      ['How much is the deposit?', `A refundable hold of ${money(business.deposit.motionCoverage)} with Motion coverage, or ${money(business.deposit.ownInsurance)} if you use your own insurance.`],
+      ['How much is the deposit?', `It is set per car, starting at ${money(business.minDeposit)}, and shown on each car's page. It is a refundable hold on your card.`],
       ['How old do I need to be?', `${business.minDriverAge} or older. Drivers under ${business.youngDriverAge} pay a young driver fee.`],
       ['Can I book for an event?', `Yes. Pick your dates online, or call ${business.phone} for help planning a wedding or group booking.`],
     ],

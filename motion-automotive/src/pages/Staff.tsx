@@ -28,7 +28,7 @@ async function pinMatches(pin: string) {
 
 const emptyCar: Car = {
   id: '', make: '', model: '', year: new Date().getFullYear(), category: 'Sedan', seats: 5, bags: 2,
-  transmission: 'Automatic', fuel: 'Gas', dailyRate: 60, image: '', color: '', plate: '', mileage: 0,
+  transmission: 'Automatic', fuel: 'Gas', dailyRate: 80, deposit: 200, milesPerDay: null, image: '', color: '', plate: '', mileage: 0,
   status: 'available', features: [],
 }
 
@@ -62,7 +62,7 @@ function CarForm({ initial, onSave, onCancel }: { initial: Car; onSave: (c: Car)
       <input className="field" value={car[k]} onChange={(e) => set(k, e.target.value)} {...props} />
     </label>
   )
-  const num = (label: string, k: 'year' | 'seats' | 'bags' | 'dailyRate' | 'mileage') => (
+  const num = (label: string, k: 'year' | 'seats' | 'bags' | 'dailyRate' | 'deposit' | 'mileage') => (
     <label className="grid gap-1.5">
       <span className="field-label">{label}</span>
       <input type="number" className="field" value={car[k]} onChange={(e) => set(k, Number(e.target.value))} />
@@ -75,6 +75,15 @@ function CarForm({ initial, onSave, onCancel }: { initial: Car; onSave: (c: Car)
       {text('Model', 'model', { required: true })}
       {num('Year', 'year')}
       {num('Daily rate ($)', 'dailyRate')}
+      {num('Deposit ($)', 'deposit')}
+      <label className="grid gap-1.5">
+        <span className="field-label">Miles a day</span>
+        <input
+          type="number" min={0} className="field" placeholder="Unlimited"
+          value={car.milesPerDay ?? ''}
+          onChange={(e) => set('milesPerDay', e.target.value === '' ? null : Number(e.target.value))}
+        />
+      </label>
       <label className="grid gap-1.5">
         <span className="field-label">Type</span>
         <select className="field" value={car.category} onChange={(e) => set('category', e.target.value as Car['category'])}>

@@ -38,6 +38,6 @@ export function quote(opts: {
     opts.driverAge && opts.driverAge < business.youngDriverAge ? business.youngDriverFeePerDay * days : 0
   const subtotal = base - weeklySaving + coverage + extras + youngDriver
   const tax = Math.round(subtotal * business.taxRate * 100) / 100
-  const deposit = opts.insurance?.type === 'own' ? business.deposit.ownInsurance : business.deposit.motionCoverage
+  const deposit = opts.car.deposit ?? business.minDeposit
   return { days, base, weeklySaving, coverage, extras, youngDriver, tax, total: Math.round((subtotal + tax) * 100) / 100, deposit }
 }

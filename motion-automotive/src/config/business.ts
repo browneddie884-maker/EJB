@@ -1,13 +1,15 @@
 /**
  * Everything the owner is likely to change lives here.
- * Prices, deposit, tax and contact details below are SAMPLE values. Replace them before launch.
+ * Hours and the lot address are the client's. Phone and email are placeholders until the Cox line
+ * and the Motion email account are set up. Daily rates and deposits are set per car (src/data/fleet.ts
+ * or the staff dashboard); tax and coverage prices below are still SAMPLE values.
  */
 export const business = {
   name: 'Motion Automotive',
   shortName: 'Motion',
-  phone: '(555) 014-2290', // TODO: real phone
-  email: 'reservations@motionautomotive.com', // TODO: real email
-  hours: 'Mon-Sat 8am-7pm, Sun 10am-4pm',
+  phone: '(555) 014-2290', // TODO: real number once the Cox line is installed
+  email: 'reservations@motionautomotive.com', // TODO: real address once the Motion email account exists
+  hours: 'Mon-Sat 10am-6pm, closed Sunday',
   /**
    * Social profiles. Paste each full profile link when the account exists, e.g.
    * instagram: 'https://www.instagram.com/motionautomotive'. Empty ones stay hidden on the site.
@@ -22,7 +24,7 @@ export const business = {
     googleReviews: '',
   },
   locations: [
-    { id: 'main', name: 'Motion Automotive lot', address: '' }, // TODO: lot street address (shown when filled in)
+    { id: 'main', name: 'Motion Automotive lot', address: '10313 Greenwell Springs Rd, Baton Rouge, LA 70814' },
     { id: 'airport', name: 'Baton Rouge airport', address: '9430 Jackie Cochran Dr, Baton Rouge, LA 70807' },
     { id: 'bluebonnet', name: 'Bluebonnet Blvd', address: '4459B Bluebonnet Blvd, Baton Rouge, LA 70809' },
   ],
@@ -30,8 +32,10 @@ export const business = {
   minDriverAge: 21,
   youngDriverAge: 25,
   youngDriverFeePerDay: 19,
-  /** Refundable hold on the driver's card. Larger when the renter brings their own policy. */
-  deposit: { ownInsurance: 400, motionCoverage: 200 },
+  /** Smallest refundable card hold; each car sets its own deposit from here up. */
+  minDeposit: 200,
+  /** SAMPLE: charged per mile over a car's included miles (cars with unlimited miles never pay it). */
+  extraMileFee: 0.35,
   freeCancellationHours: 48,
   /** Rentals of this many days or more get the weekly discount below. */
   weeklyMinDays: 7,
@@ -76,7 +80,7 @@ export const coveragePlans: {
 ]
 
 export const extras: { id: string; name: string; perDay?: number; flat?: number }[] = [
-  { id: 'driver', name: 'Additional driver', perDay: 12 },
+  { id: 'driver', name: 'Additional licensed driver', flat: 50 },
   { id: 'child-seat', name: 'Child seat', perDay: 9 },
   { id: 'toll', name: 'Toll pass', perDay: 7 },
   { id: 'fuel', name: 'Prepaid fuel or charge', flat: 59 },

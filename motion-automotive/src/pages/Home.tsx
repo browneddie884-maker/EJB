@@ -13,7 +13,7 @@ import { landingPages } from '@/config/landing-pages'
 import { businessJsonLd, useSeo } from '@/lib/seo'
 import { CarImage } from '@/components/car-image'
 import { MakeLogo } from '@/components/make-logo'
-import { business, coveragePlans } from '@/config/business'
+import { business, coveragePlans, extras } from '@/config/business'
 import { categories, type Car, type Category } from '@/data/types'
 import { useStore } from '@/store/store'
 import { cn, money } from '@/lib/utils'
@@ -104,7 +104,7 @@ function Protection() {
             Most personal auto policies cover rentals. Add your carrier and policy number when you book and pay nothing extra for coverage.
           </p>
           <ul className="mt-6 space-y-3 text-sm">
-            {['Active policy with collision and liability', 'Insurance card shown at pickup', `${money(business.deposit.ownInsurance)} refundable card hold`].map((t) => (
+            {['Active policy with collision and liability', 'Insurance card shown at pickup', `Refundable card hold from ${money(business.minDeposit)}, set by the car`].map((t) => (
               <li key={t} className="flex gap-3"><Check className="mt-0.5 h-4 w-4 shrink-0 text-ok" />{t}</li>
             ))}
           </ul>
@@ -114,7 +114,7 @@ function Protection() {
           <ShieldCheck className="h-7 w-7 text-signal" strokeWidth={1.5} />
           <h3 className="mt-5 text-2xl font-semibold tracking-tight">Or add Motion coverage</h3>
           <p className="mt-2 max-w-[44ch] leading-relaxed opacity-75">
-            No paperwork, nothing to claim on your own policy, and a smaller {money(business.deposit.motionCoverage)} hold.
+            No paperwork and nothing to claim on your own policy if something happens.
           </p>
           <div className="mt-6 grid gap-3 sm:grid-cols-3">
             {coveragePlans.map((p) => (
@@ -281,7 +281,10 @@ export default function Home() {
           <Reveal delay={0.06} className="divide-y divide-border border-y border-border">
             {[
               ['How old do I need to be?', `Drivers must be ${business.minDriverAge} or older with a valid license. Drivers under ${business.youngDriverAge} pay ${money(business.youngDriverFeePerDay)} per day.`],
-              ['What if I use my own insurance?', `Enter your carrier, policy number and expiry when you book, and bring your insurance card. We place a ${money(business.deposit.ownInsurance)} refundable hold on your card.`],
+              ['What if I use my own insurance?', 'Enter your carrier, policy number and expiry when you book, and bring your insurance card to pickup.'],
+              ['How much is the deposit?', `It depends on the car, starting at ${money(business.minDeposit)}. It is a refundable hold on your card, shown on each car and at checkout, and released after the car comes back.`],
+              ['Are miles included?', 'Every car lists its included miles. Many have unlimited miles; the rest show how many miles a day are included.'],
+              ['Can someone else drive?', `Yes. Add a licensed second driver for ${money(extras.find((e) => e.id === 'driver')?.flat ?? 0)} at checkout. Every driver has to be on the rental.`],
               ['Can I cancel?', `Yes. Cancel free up to ${business.freeCancellationHours} hours before pickup from the My booking page.`],
               ['Where do I pick up?', business.locations.map((l) => (l.address ? `${l.name}: ${l.address}` : l.name)).join('. ') + '.'],
             ].map(([q, a]) => (
