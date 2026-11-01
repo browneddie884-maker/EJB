@@ -1,0 +1,141 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "@fontsource-variable/geist";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/*
+  Motion Automotive tokens.
+  Palette: cool monochrome + one signal orange. Orange carries near-black text (never white) for AA contrast.
+  Shape rule: interactive controls are full pills, inputs are rounded-xl, containers are rounded-3xl.
+*/
+:root {
+  --background: #f3f4f5;
+  --foreground: #111316;
+  --card: #ffffff;
+  --muted: #e6e8eb;
+  --muted-foreground: #3e4550;
+  --border: #d6d9de;
+  --ring: #111316;
+  --signal: #ff5a1f;
+  --signal-strong: #e14a12;
+  --on-signal: #111316;
+  --ok: #157a3c;
+  --danger: #b4231a;
+  /* shadcn/ui token names, mapped onto the palette above */
+  --primary: var(--signal);
+  --primary-foreground: var(--on-signal);
+  --secondary: var(--muted);
+  --secondary-foreground: var(--foreground);
+  --accent: var(--muted);
+  --accent-foreground: var(--foreground);
+  --popover: var(--card);
+  --popover-foreground: var(--foreground);
+  --card-foreground: var(--foreground);
+  --input: var(--border);
+  --destructive: var(--danger);
+}
+.dark {
+  --background: #0d0e10;
+  --foreground: #eef0f2;
+  --card: #16181b;
+  --muted: #202328;
+  --muted-foreground: #bcc2cb;
+  --border: #2c3036;
+  --ring: #eef0f2;
+  --signal: #ff6a33;
+  --signal-strong: #ff834f;
+  --on-signal: #111316;
+  --ok: #4ade80;
+  --danger: #f87171;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
+  --color-ring: var(--ring);
+  --color-signal: var(--signal);
+  --color-signal-strong: var(--signal-strong);
+  --color-on-signal: var(--on-signal);
+  --color-ok: var(--ok);
+  --color-danger: var(--danger);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-card-foreground: var(--card-foreground);
+  --color-input: var(--input);
+  --color-destructive: var(--destructive);
+  --font-sans: "Geist Variable", ui-sans-serif, system-ui, sans-serif;
+}
+
+@layer base {
+  html { color-scheme: light; }
+  html.dark { color-scheme: dark; }
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    font-feature-settings: "ss01", "tnum";
+  }
+  :focus-visible { @apply outline-2 outline-offset-2 outline-ring; }
+}
+
+@utility btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-full px-5 py-2.5 text-sm font-medium whitespace-nowrap transition-[background-color,transform,color] duration-200 active:scale-[0.98] disabled:pointer-events-none disabled:opacity-50;
+}
+
+@utility btn-signal { @apply btn bg-signal text-on-signal hover:bg-signal-strong;
+}
+
+@utility btn-solid { @apply btn bg-foreground text-background hover:opacity-90;
+}
+
+@utility btn-ghost { @apply btn border border-border bg-transparent text-foreground hover:bg-muted;
+}
+
+@utility field-label { @apply text-sm font-medium text-foreground;
+}
+
+@utility field {
+    @apply w-full rounded-xl border border-border bg-card px-3.5 py-2.5 text-sm text-foreground placeholder:text-muted-foreground/80 focus:outline-none focus:ring-2 focus:ring-ring;
+}
+
+@utility field-error { @apply text-sm text-danger;
+}
+
+@utility container-page { @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
+}
+
+/*
+  Unlayered on purpose: a host page (the artifact viewer, a site builder) may ship its own
+  reset for body font, size and color-scheme. Unlayered rules beat Tailwind's layers, so these
+  keep the site's font, 16px base size and dark-mode form controls wherever it is embedded.
+*/
+html { color-scheme: light; }
+html.dark { color-scheme: dark; }
+html body {
+  margin: 0;
+  font-family: "Geist Variable", ui-sans-serif, system-ui, sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  background-color: var(--background);
+  color: var(--foreground);
+}
+html option { background-color: var(--card); color: var(--foreground); }
+
+/*
+  Phones: iOS zooms the whole page when a field under 16px gets focus, so fields are 16px on
+  small screens. Also no grey tap flash, and no double-tap zoom delay on controls.
+*/
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; -webkit-tap-highlight-color: transparent; }
+a, button, summary, label, select, input { touch-action: manipulation; }
+@media (max-width: 767px) {
+  html input:not([type="checkbox"]):not([type="radio"]), html select, html textarea { font-size: 16px; }
+}
