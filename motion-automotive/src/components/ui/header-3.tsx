@@ -34,6 +34,7 @@ import {
 import { Logo } from '@/components/logo';
 import { ThemeToggleButton } from '@/components/theme-toggle';
 import { business } from '@/config/business';
+import { myBooking } from '@/lib/booking-links';
 import { cn } from '@/lib/utils';
 
 type LinkItem = {
@@ -54,7 +55,7 @@ const rentLinks: LinkItem[] = [
 ];
 
 const helpLinks: LinkItem[] = [
-	{ title: 'My booking', href: '/reservations', description: 'Change dates or cancel', icon: Ticket },
+	{ title: 'My booking', href: myBooking.href, external: myBooking.external, description: 'Change dates or cancel', icon: Ticket },
 	{ title: 'Insurance options', href: '/#protection', description: 'Use your own policy or ours', icon: ShieldCheck },
 	{ title: 'Questions', href: '/#faq', description: 'Age, deposits, cancellations', icon: HelpCircle },
 ];

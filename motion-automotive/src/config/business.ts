@@ -23,6 +23,15 @@ export const business = {
     /** Google Business Profile reviews link ("Ask for reviews" > copy link). */
     googleReviews: '',
   },
+  /**
+   * Phase 1: bookings run on VEVS. Paste the links from the VEVS dashboard here and every Reserve
+   * button opens VEVS (bookingUrl), and "My booking" opens VEVS's customer page (manageUrl).
+   * A car can also have its own VEVS link, set in the staff dashboard. Empty = the site's own checkout.
+   */
+  vevs: {
+    bookingUrl: '',
+    manageUrl: '',
+  },
   locations: [
     { id: 'main', name: 'Motion Automotive lot', address: '10313 Greenwell Springs Rd, Baton Rouge, LA 70814' },
     { id: 'airport', name: 'Baton Rouge airport', address: '9430 Jackie Cochran Dr, Baton Rouge, LA 70807' },

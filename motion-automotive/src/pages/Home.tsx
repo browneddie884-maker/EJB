@@ -6,6 +6,7 @@ import DigitalSerenity from '@/components/ui/digital-serenity-animated-landing-p
 import { PricingSection, type PricingPlan } from '@/components/ui/pricing'
 import { QuickSearch } from '@/components/quick-search'
 import { HeroVideo } from '@/components/hero-video'
+import { myBooking } from '@/lib/booking-links'
 import { LegalLinks } from '@/components/legal-links'
 import { Logo } from '@/components/logo'
 import { SocialLinks } from '@/components/social-links'
@@ -183,7 +184,7 @@ function useAppLink() {
   }
   return {
     fleet: { href: fleet, onClick: go('/fleet') },
-    booking: { href: booking, onClick: go('/reservations') },
+    booking: myBooking.external ? { href: myBooking.href } : { href: booking, onClick: go('/reservations') },
     staff: { href: staff, onClick: go('/staff') },
     insurance: { href: insurance, onClick: go('/#protection') },
   }

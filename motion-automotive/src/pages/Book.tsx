@@ -48,6 +48,11 @@ export default function Book() {
   const navigate = useNavigate()
   const { getCar, isAvailable, bookedRanges, createReservation } = useStore()
   const car = getCar(id)
+  // Phase 1: when bookings run on VEVS, an old or shared checkout link goes straight there.
+  const vevsHref = car ? car.vevsUrl || business.vevs.bookingUrl : ''
+  useEffect(() => {
+    if (vevsHref) window.location.replace(vevsHref)
+  }, [vevsHref])
   useSeo(`Reserve ${car ? `the ${car.make} ${car.model}` : 'a car'} | ${business.name}`, 'Pick dates, insurance and extras, and confirm your rental.', `/book/${id}`, { noindex: true })
   const today = isoDate(new Date())
 

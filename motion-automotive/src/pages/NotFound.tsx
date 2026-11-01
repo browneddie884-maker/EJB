@@ -3,6 +3,7 @@ import { CalendarDays, CarFront, Phone, Ticket } from 'lucide-react'
 import { Logo } from '@/components/logo'
 import { business } from '@/config/business'
 import { useSeo } from '@/lib/seo'
+import { myBooking } from '@/lib/booking-links'
 
 const routes = [
   { to: '/fleet', label: 'Browse the fleet', icon: CarFront },
@@ -22,11 +23,17 @@ export default function NotFound() {
       </p>
       <div className="mt-8 flex flex-wrap justify-center gap-2">
         <Link to="/" className="btn-signal">Back to home</Link>
-        {routes.map(({ to, label, icon: Icon }) => (
-          <Link key={to} to={to} className="btn-ghost">
-            <Icon className="h-4 w-4" /> {label}
-          </Link>
-        ))}
+        {routes.map(({ to, label, icon: Icon }) =>
+          to === '/reservations' && myBooking.external ? (
+            <a key={to} href={myBooking.href} className="btn-ghost">
+              <Icon className="h-4 w-4" /> {label}
+            </a>
+          ) : (
+            <Link key={to} to={to} className="btn-ghost">
+              <Icon className="h-4 w-4" /> {label}
+            </Link>
+          ),
+        )}
       </div>
       <a href={`tel:${business.phone.replace(/[^\d+]/g, '')}`} className="mt-6 inline-flex items-center gap-2 py-3 text-sm text-muted-foreground hover:text-foreground">
         <Phone className="h-4 w-4" /> Or call us at {business.phone}

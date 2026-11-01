@@ -20,6 +20,8 @@ export type Car = {
   deposit: number
   /** Miles included per rental day; null means unlimited. */
   milesPerDay: number | null
+  /** This car's booking page on VEVS (Phase 1). Empty = the general VEVS booking link. */
+  vevsUrl?: string
   image: string
   color: string
   plate: string

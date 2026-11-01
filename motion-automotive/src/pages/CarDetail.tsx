@@ -6,6 +6,7 @@ import { CarImage } from '@/components/car-image'
 import { CarSpecs, milesLabel } from '@/components/car-card'
 import { DateRangeCalendar } from '@/components/date-range-calendar'
 import { MobileActionBar } from '@/components/mobile-action-bar'
+import { reserveTarget } from '@/lib/booking-links'
 import { useStore } from '@/store/store'
 import { business } from '@/config/business'
 import { useSeo } from '@/lib/seo'
@@ -35,6 +36,7 @@ export default function CarDetail() {
   const to = params.get('to') ?? addDays(from, 3)
   const loc = params.get('loc') ?? ''
   const free = isAvailable(car.id, from, to)
+  const reserve = reserveTarget(car, `from=${from}&to=${to}${loc ? `&loc=${loc}` : ''}`)
   const upcoming = reservations
     .filter((r) => r.carId === car.id && (r.status === 'confirmed' || r.status === 'picked-up') && r.dropoff >= today)
     .sort((a, b) => a.pickup.localeCompare(b.pickup))
@@ -80,9 +82,11 @@ export default function CarDetail() {
               <>
                 <DateRangeCalendar className="mt-4" from={from} to={to} onChange={setDates} booked={bookedRanges(car.id)} />
                 {free ? (
-                  <Link to={`/book/${car.id}?from=${from}&to=${to}${loc ? `&loc=${loc}` : ''}`} className="btn-signal mt-4 w-full py-3">
-                    Reserve this car
-                  </Link>
+                  reserve.external ? (
+                    <a href={reserve.href} className="btn-signal mt-4 w-full py-3">Reserve this car</a>
+                  ) : (
+                    <Link to={reserve.href} className="btn-signal mt-4 w-full py-3">Reserve this car</Link>
+                  )
                 ) : (
                   <p className="mt-4 rounded-xl bg-muted px-4 py-3 text-sm" role="status">
                     Booked for part of those dates. Try different dates or <Link to={`/fleet?from=${from}&to=${to}`} className="font-medium underline underline-offset-4">see what is free</Link>.
@@ -111,7 +115,11 @@ export default function CarDetail() {
             <p className="truncate text-sm text-muted-foreground">{prettyDate(from)} to {prettyDate(to)}</p>
           </div>
           {free ? (
-            <Link to={`/book/${car.id}?from=${from}&to=${to}${loc ? `&loc=${loc}` : ''}`} className="btn-signal shrink-0 px-6 py-3">Reserve</Link>
+            reserve.external ? (
+              <a href={reserve.href} className="btn-signal shrink-0 px-6 py-3">Reserve</a>
+            ) : (
+              <Link to={reserve.href} className="btn-signal shrink-0 px-6 py-3">Reserve</Link>
+            )
           ) : (
             <a href="#reserve" className="btn-signal shrink-0 px-6 py-3">Change dates</a>
           )}

@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import { business } from '@/config/business'
 import { landingPages } from '@/config/landing-pages'
 import { LegalLinks } from './legal-links'
+import { myBooking } from '@/lib/booking-links'
 import { Logo } from './logo'
 import { SocialLinks } from './social-links'
 
@@ -25,7 +26,11 @@ export function Footer() {
         <div className="text-sm md:space-y-2">
           <p className="pb-1 font-medium md:pb-0">Rent</p>
           <Link className="block py-3 text-muted-foreground hover:text-foreground md:py-0" to="/fleet">Fleet</Link>
-          <Link className="block py-3 text-muted-foreground hover:text-foreground md:py-0" to="/reservations">My booking</Link>
+          {myBooking.external ? (
+            <a className="block py-3 text-muted-foreground hover:text-foreground md:py-0" href={myBooking.href}>My booking</a>
+          ) : (
+            <Link className="block py-3 text-muted-foreground hover:text-foreground md:py-0" to={myBooking.href}>My booking</Link>
+          )}
           <Link className="block py-3 text-muted-foreground hover:text-foreground md:py-0" to="/staff">Staff login</Link>
         </div>
         <div className="text-sm md:space-y-2">

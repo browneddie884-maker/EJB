@@ -56,10 +56,10 @@ function CarForm({ initial, onSave, onCancel }: { initial: Car; onSave: (c: Car)
     onSave({ ...car, id, features: features.split(',').map((f) => f.trim()).filter(Boolean) })
   }
 
-  const text = (label: string, k: 'make' | 'model' | 'color' | 'plate' | 'image', props: Record<string, unknown> = {}) => (
+  const text = (label: string, k: 'make' | 'model' | 'color' | 'plate' | 'image' | 'vevsUrl', props: Record<string, unknown> = {}) => (
     <label className="grid gap-1.5">
       <span className="field-label">{label}</span>
-      <input className="field" value={car[k]} onChange={(e) => set(k, e.target.value)} {...props} />
+      <input className="field" value={car[k] ?? ''} onChange={(e) => set(k, e.target.value)} {...props} />
     </label>
   )
   const num = (label: string, k: 'year' | 'seats' | 'bags' | 'dailyRate' | 'deposit' | 'mileage') => (
@@ -100,6 +100,7 @@ function CarForm({ initial, onSave, onCancel }: { initial: Car; onSave: (c: Car)
       {num('Bags', 'bags')}
       {text('Color', 'color')}
       {text('Plate', 'plate')}
+      {text('VEVS booking link', 'vevsUrl', { type: 'url', placeholder: 'Uses the general VEVS link' })}
       {num('Mileage', 'mileage')}
       <label className="grid gap-1.5">
         <span className="field-label">Transmission</span>
